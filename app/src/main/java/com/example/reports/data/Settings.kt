@@ -1,17 +1,21 @@
 package com.example.reports.data
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+
 @Entity(tableName = "settings")
 data class Settings(
-    @PrimaryKey val id: String = "settings",
+    @PrimaryKey
+    val id: String = "settings",
     val emailTo: String = "",
-    val emailSubject: String = "Отчет от {date}",
+    val emailSubject: String = "Отчет от {date} - {root_category}",
     val emailBody: String = "",
     val saveFolder: String = "Downloads",
-    val fileNameTemplate: String = "Отчет_{date}",
+    val fileNameTemplate: String = "Отчет_{date}_{group}",
     val formatDocx: Boolean = true,
     val formatPdf: Boolean = false,
     val formatTxt: Boolean = false,
     val darkMode: Boolean = false,
+    val settingsMode: String = "user", // "user" или "dev"
     val updatedAt: Long = System.currentTimeMillis()
 )
