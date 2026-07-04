@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F2F2F7">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,17 +16,14 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginBottom="16dp">
-
-            <TextView
+            <Button
                 android:id="@+id/btnBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="← Назад"
-                android:textSize="16sp"
-                android:textColor="#4D6BFE"
-                android:padding="8dp"
-                android:background="?attr/selectableItemBackground" />
-
+                style="@style/ButtonSecondary"
+                android:backgroundTint="@color/surface"
+                android:textColor="@color/primary" />
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -37,18 +33,9 @@
                 android:textStyle="bold"
                 android:textColor="#0A0F1E"
                 android:gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="➕"
-                android:textSize="20sp"
-                android:textColor="#4D6BFE"
-                android:padding="8dp"
-                android:background="?attr/selectableItemBackground" />
         </LinearLayout>
 
-        <!-- Режим настроек -->
+        <!-- Режим -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,66 +49,47 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#FFFFFF"
-            android:padding="14dp"
-            android:layout_marginBottom="16dp"
-            android:elevation="1dp">
+            android:orientation="horizontal"
+            android:background="#E5E5EA"
+            android:padding="3dp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/btnUserMode"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="#E5E5EA"
-                android:padding="3dp"
-                android:gravity="center">
+                android:layout_weight="1"
+                android:text="👤 Пользователь"
+                android:textSize="14sp"
+                android:textColor="#0A0F1E"
+                android:background="@drawable/mode_button_active"
+                android:padding="8dp"
+                android:stateListAnimator="@null"
+                android:elevation="0dp" />
 
-                <Button
-                    android:id="@+id/btnUserMode"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="👤 Пользователь"
-                    android:textSize="14sp"
-                    android:textColor="#6B7280"
-                    android:background="@drawable/mode_button"
-                    android:padding="8dp"
-                    android:stateListAnimator="@null"
-                    android:elevation="0dp" />
-
-                <Button
-                    android:id="@+id/btnDevMode"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🛠️ Разработчик"
-                    android:textSize="14sp"
-                    android:textColor="#6B7280"
-                    android:background="@drawable/mode_button"
-                    android:padding="8dp"
-                    android:stateListAnimator="@null"
-                    android:elevation="0dp" />
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvModeHint"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/btnDevMode"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="🔴 Режим пользователя — только основные настройки."
-                android:textSize="13sp"
+                android:layout_weight="1"
+                android:text="🛠️ Разработчик"
+                android:textSize="14sp"
                 android:textColor="#6B7280"
-                android:layout_marginTop="4dp" />
+                android:background="@drawable/mode_button"
+                android:padding="8dp"
+                android:stateListAnimator="@null"
+                android:elevation="0dp" />
+
         </LinearLayout>
 
-        <!-- ===== ПОЛЬЗОВАТЕЛЬ ===== -->
+        <!-- ПОЛЬЗОВАТЕЛЬ -->
         <LinearLayout
             android:id="@+id/userModeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Отправка -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -167,7 +135,6 @@
 
             </LinearLayout>
 
-            <!-- Сохранение -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -204,15 +171,12 @@
                         android:id="@+id/spinnerSaveFolder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:spinnerMode="dropdown"
-                        android:minWidth="120dp" />
+                        android:background="@null" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!-- Формат -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -249,15 +213,12 @@
                         android:id="@+id/spinnerFormat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:spinnerMode="dropdown"
-                        android:minWidth="120dp" />
+                        android:background="@null" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!-- Приложение -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -290,7 +251,7 @@
                         android:textSize="16sp"
                         android:textColor="#0A0F1E" />
 
-                    <androidx.appcompat.widget.SwitchCompat
+                    <Switch
                         android:id="@+id/switchDarkMode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -301,7 +262,7 @@
 
         </LinearLayout>
 
-        <!-- ===== РАЗРАБОТЧИК ===== -->
+        <!-- РАЗРАБОТЧИК -->
         <LinearLayout
             android:id="@+id/devModeLayout"
             android:layout_width="match_parent"
@@ -309,7 +270,6 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <!-- Тема письма -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -407,79 +367,6 @@
 
             </LinearLayout>
 
-            <!-- Данные -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Данные"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="#6B7280"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#FFFFFF"
-                android:elevation="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="12dp 16dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Экспорт"
-                        android:textSize="16sp"
-                        android:textColor="#0A0F1E" />
-
-                    <TextView
-                        android:id="@+id/btnExport"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textSize="20sp"
-                        android:textColor="#C6C6C8"
-                        android:background="?attr/selectableItemBackground"
-                        android:padding="8dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="12dp 16dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Импорт"
-                        android:textSize="16sp"
-                        android:textColor="#0A0F1E" />
-
-                    <TextView
-                        android:id="@+id/btnImport"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textSize="20sp"
-                        android:textColor="#C6C6C8"
-                        android:background="?attr/selectableItemBackground"
-                        android:padding="8dp" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Управление -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -497,147 +384,46 @@
                 android:background="#FFFFFF"
                 android:elevation="1dp">
 
-                <LinearLayout
+                <Button
+                    android:id="@+id/btnCategories"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="12dp 16dp"
-                    android:gravity="center_vertical">
+                    android:text="📂 Категории"
+                    style="@style/ButtonSecondary"
+                    android:backgroundTint="@color/surface"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp" />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Категории"
-                        android:textSize="16sp"
-                        android:textColor="#0A0F1E" />
-
-                    <TextView
-                        android:id="@+id/btnCategories"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textSize="20sp"
-                        android:textColor="#C6C6C8"
-                        android:background="?attr/selectableItemBackground"
-                        android:padding="8dp" />
-                </LinearLayout>
-
-                <LinearLayout
+                <Button
+                    android:id="@+id/btnVariables"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="12dp 16dp"
-                    android:gravity="center_vertical">
+                    android:text="🔤 Переменные"
+                    style="@style/ButtonSecondary"
+                    android:backgroundTint="@color/surface"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp" />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Переменные"
-                        android:textSize="16sp"
-                        android:textColor="#0A0F1E" />
-
-                    <TextView
-                        android:id="@+id/btnVariables"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textSize="20sp"
-                        android:textColor="#C6C6C8"
-                        android:background="?attr/selectableItemBackground"
-                        android:padding="8dp" />
-                </LinearLayout>
-
-                <LinearLayout
+                <Button
+                    android:id="@+id/btnTemplates"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="12dp 16dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Шаблоны"
-                        android:textSize="16sp"
-                        android:textColor="#0A0F1E" />
-
-                    <TextView
-                        android:id="@+id/btnTemplates"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textSize="20sp"
-                        android:textColor="#C6C6C8"
-                        android:background="?attr/selectableItemBackground"
-                        android:padding="8dp" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Приложение (доп) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Приложение"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="#6B7280"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#FFFFFF"
-                android:elevation="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="12dp 16dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Очистить все"
-                        android:textSize="16sp"
-                        android:textColor="#FF3B30" />
-
-                    <TextView
-                        android:id="@+id/btnClearData"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textSize="20sp"
-                        android:textColor="#C6C6C8"
-                        android:background="?attr/selectableItemBackground"
-                        android:padding="8dp" />
-                </LinearLayout>
+                    android:text="📋 Шаблоны"
+                    style="@style/ButtonSecondary"
+                    android:backgroundTint="@color/surface"
+                    android:textColor="@color/primary" />
 
             </LinearLayout>
 
         </LinearLayout>
 
-        <!-- Сохранить -->
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="💾 Сохранить настройки"
-            android:textSize="16sp"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/button_primary"
-            android:padding="14dp"
-            android:layout_marginTop="24dp"
-            android:stateListAnimator="@null"
-            android:elevation="0dp" />
+            style="@style/ButtonPrimary"
+            android:layout_marginTop="24dp" />
 
     </LinearLayout>
 </ScrollView>
