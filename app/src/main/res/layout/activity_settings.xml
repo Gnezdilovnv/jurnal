@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2F2F7">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="← Назад"
+                style="@style/ButtonSecondary"
+                android:backgroundTint="@color/surface"
+                android:textColor="@color/primary" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Настройки"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#0A0F1E"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Режим настроек"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#6B7280"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#E5E5EA"
+            android:padding="3dp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+            <Button
+                android:id="@+id/btnUserMode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="👤 Пользователь"
+                android:textSize="14sp"
+                android:textColor="#0A0F1E"
+                android:background="@drawable/mode_button_active"
+                android:padding="8dp"
+                android:stateListAnimator="@null"
+                android:elevation="0dp" />
+            <Button
+                android:id="@+id/btnDevMode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🛠️ Разработчик"
+                android:textSize="14sp"
+                android:textColor="#6B7280"
+                android:background="@drawable/mode_button"
+                android:padding="8dp"
+                android:stateListAnimator="@null"
+                android:elevation="0dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/userModeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Отправка"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#6B7280"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:elevation="1dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Email получателя"
+                        android:textSize="16sp"
+                        android:textColor="#0A0F1E" />
+                    <EditText
+                        android:id="@+id/etEmailTo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="komandir@army.ru"
+                        android:textSize="15sp"
+                        android:textColor="#6B7280"
+                        android:background="@null"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Сохранение"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#6B7280"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:elevation="1dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Место сохранения"
+                        android:textSize="16sp"
+                        android:textColor="#0A0F1E" />
+                    <Spinner
+                        android:id="@+id/spinnerSaveFolder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Формат"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#6B7280"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:elevation="1dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Формат файла"
+                        android:textSize="16sp"
+                        android:textColor="#0A0F1E" />
+                    <Spinner
+                        android:id="@+id/spinnerFormat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Приложение"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#6B7280"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:elevation="1dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Темная тема"
+                        android:textSize="16sp"
+                        android:textColor="#0A0F1E" />
+                    <Switch
+                        android:id="@+id/switchDarkMode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/devModeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🛠️ Дополнительные настройки"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#FF3B30"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:elevation="1dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Тема письма"
+                        android:textSize="16sp"
+                        android:textColor="#0A0F1E" />
+                    <EditText
+                        android:id="@+id/etEmailSubject"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Отчет от {date}"
+                        android:textSize="15sp"
+                        android:textColor="#6B7280"
+                        android:background="@null"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Текст письма"
+                        android:textSize="16sp"
+                        android:textColor="#0A0F1E" />
+                    <EditText
+                        android:id="@+id/etEmailBody"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Здравствуйте!"
+                        android:textSize="15sp"
+                        android:textColor="#6B7280"
+                        android:background="@null"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Имя файла"
+                        android:textSize="16sp"
+                        android:textColor="#0A0F1E" />
+                    <EditText
+                        android:id="@+id/etFileName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Отчет_{date}_{group}"
+                        android:textSize="15sp"
+                        android:textColor="#6B7280"
+                        android:background="@null"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Управление"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#6B7280"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:elevation="1dp">
+                <Button
+                    android:id="@+id/btnCategories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📂 Категории"
+                    style="@style/ButtonSecondary"
+                    android:backgroundTint="@color/surface"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp" />
+                <Button
+                    android:id="@+id/btnVariables"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🔤 Переменные"
+                    style="@style/ButtonSecondary"
+                    android:backgroundTint="@color/surface"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp" />
+                <Button
+                    android:id="@+id/btnTemplates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📋 Шаблоны"
+                    style="@style/ButtonSecondary"
+                    android:backgroundTint="@color/surface"
+                    android:textColor="@color/primary" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="💾 Сохранить настройки"
+            style="@style/ButtonPrimary"
+            android:layout_marginTop="24dp" />
+
+    </LinearLayout>
+</ScrollView>

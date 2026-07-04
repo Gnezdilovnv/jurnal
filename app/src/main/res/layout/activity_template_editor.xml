@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background"
+    android:padding="16dp">
+    <Button android:id="@+id/btnBack" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="← Назад" style="@style/ButtonSecondary" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="✏️ Редактор шаблона" android:textSize="24sp" android:textStyle="bold" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" />
+    <EditText android:id="@+id/etTemplateName" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Название шаблона" android:layout_marginBottom="12dp" />
+    <EditText android:id="@+id/etTemplateText" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:hint="Текст с {переменными}" android:gravity="top" android:minLines="6" android:background="@color/surface" android:padding="12dp" />
+    <TextView android:id="@+id/tvAvailableVars" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Доступные переменные:" android:textStyle="bold" android:layout_marginTop="12dp" />
+    <Button android:id="@+id/btnSaveTemplate" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="💾 Сохранить шаблон" style="@style/ButtonPrimary" android:layout_marginTop="12dp" />
+</LinearLayout>

@@ -3,22 +3,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp">
+    android:background="@color/background"
+    android:padding="16dp"
+    android:gravity="center">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="✅ ReportsApp"
+        android:text="@string/app_name"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:layout_marginBottom="48dp" />
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="32dp" />
 
     <Button
-        android:id="@+id/btnTest"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnCreateReport"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Сохранить категорию"
-        android:padding="16dp" />
+        android:text="@string/create_report"
+        style="@style/ButtonPrimary"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/btnReportsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/reports_list"
+        style="@style/ButtonPrimary"
+        android:backgroundTint="@color/green"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/btnTemplates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/templates"
+        style="@style/ButtonPrimary"
+        android:backgroundTint="@color/orange"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/btnSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings"
+        style="@style/ButtonSecondary" />
 
 </LinearLayout>

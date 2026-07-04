@@ -1,26 +1,34 @@
 package com.example.reports
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import com.example.reports.data.AppDatabase
-import com.example.reports.data.Category
-import kotlinx.coroutines.launch
+import com.example.reports.ui.*
+import com.example.reports.utils.Logger
 
 class MainActivity : AppCompatActivity() {
-    private val db by lazy { AppDatabase.getDatabase(this) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<Button>(R.id.btnTest).setOnClickListener {
-            lifecycleScope.launch {
-                db.categoryDao().insert(Category(name = "Тестовая категория"))
-                Toast.makeText(this@MainActivity, "Категория сохранена", Toast.LENGTH_SHORT).show()
-            }
+        Logger.init(this)
+        Logger.writeLog("MainActivity started")
+
+        findViewById<Button>(R.id.btnCreateReport).setOnClickListener {
+            startActivity(Intent(this, TemplatesActivity::class.java))
+        }
+
+        findViewById<Button>(R.id.btnReportsList).setOnClickListener {
+            startActivity(Intent(this, ReportsListActivity::class.java))
+        }
+
+        findViewById<Button>(R.id.btnTemplates).setOnClickListener {
+            startActivity(Intent(this, TemplatesActivity::class.java))
+        }
+
+        findViewById<Button>(R.id.btnSettings).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
 }
