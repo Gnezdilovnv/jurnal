@@ -1,13 +1,18 @@
 package com.example.reports.ui
 
+import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.FileProvider
 import com.example.reports.R
 import com.example.reports.data.AppDatabase
 import com.example.reports.data.Settings
+import com.example.reports.utils.DataExporter
+import com.example.reports.utils.ErrorHandler
 import com.example.reports.utils.Logger
 import kotlinx.coroutines.*
 
@@ -23,6 +28,8 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var btnDevMode: Button
     private lateinit var userModeLayout: LinearLayout
     private lateinit var devModeLayout: LinearLayout
+    private lateinit var btnExport: Button
+    private lateinit var btnImport: Button
 
     private val db by lazy { AppDatabase.getDatabase(this) }
     private val scope = CoroutineScope(Dispatchers.Main)
@@ -49,6 +56,8 @@ class SettingsActivity : AppCompatActivity() {
         btnDevMode = findViewById(R.id.btnDevMode)
         userModeLayout = findViewById(R.id.userModeLayout)
         devModeLayout = findViewById(R.id.devModeLayout)
+        btnExport = findViewById(R.id.btnExport)
+        btnImport = findViewById(R.id.btnImport)
 
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
         findViewById<Button>(R.id.btnSave).setOnClickListener { saveSettings() }
@@ -61,6 +70,10 @@ class SettingsActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnTemplates).setOnClickListener {
             startActivity(Intent(this, TemplatesActivity::class.java))
         }
+        
+        btnExport.setOnClickListener { exportData() }
+        btnImport.setOnClickListener { importData() }
+        findViewById<Button>(R.id.btnClearData).setOnClickListener { clearData() }
     }
 
     private fun setupSpinners() {
@@ -78,15 +91,13 @@ class SettingsActivity : AppCompatActivity() {
     private fun loadSettings() {
         scope.launch {
             try {
-                val loaded = withContext(Dispatchers.IO) { 
-                    db.settingsDao().get() 
-                }
+                val loaded = withContext(Dispatchers.IO) { db.settingsDao().get() }
                 if (loaded != null) {
                     settings = loaded
                     applySettings()
                 }
             } catch (e: Exception) {
-                Logger.writeError("Load settings error", e)
+                ErrorHandler.showError(this@SettingsActivity, "Загрузка настроек", e)
             }
         }
     }
@@ -153,13 +164,112 @@ class SettingsActivity : AppCompatActivity() {
 
         scope.launch {
             try {
-                withContext(Dispatchers.IO) { 
-                    db.settingsDao().insert(settings) 
-                }
-                Toast.makeText(this@SettingsActivity, "Настройки сохранены", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.IO) { db.settingsDao().insert(settings) }
+                ErrorHandler.showSuccess(this@SettingsActivity, "Настройки сохранены")
             } catch (e: Exception) {
-                Toast.makeText(this@SettingsActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
+                ErrorHandler.showError(this@SettingsActivity, "Сохранение настроек", e)
             }
         }
+    }
+
+    private fun exportData() {
+        scope.launch {
+            try {
+                val file = withContext(Dispatchers.IO) {
+                    DataExporter.exportAllData(this@SettingsActivity)
+                }
+                if (file != null) {
+                    ErrorHandler.showSuccess(this@SettingsActivity, "Данные экспортированы: ${file.name}")
+                    
+                    // Предлагаем поделиться файлом
+                    try {
+                        val uri = FileProvider.getUriForFile(
+                            this@SettingsActivity,
+                            "${packageName}.fileprovider",
+                            file
+                        )
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "application/json"
+                            putExtra(Intent.EXTRA_STREAM, uri)
+                            putExtra(Intent.EXTRA_SUBJECT, "Бэкап данных")
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        }
+                        startActivity(Intent.createChooser(shareIntent, "Отправить бэкап через..."))
+                    } catch (e: Exception) {
+                        // Если не получилось отправить, просто показываем сообщение
+                    }
+                } else {
+                    ErrorHandler.showError(this@SettingsActivity, "Ошибка экспорта данных")
+                }
+            } catch (e: Exception) {
+                ErrorHandler.showError(this@SettingsActivity, "Экспорт данных", e)
+            }
+        }
+    }
+
+    private fun importData() {
+        // Показываем список доступных файлов бэкапа
+        val backupFiles = DataExporter.getBackupFiles()
+        if (backupFiles.isEmpty()) {
+            Toast.makeText(this, "Нет файлов бэкапа в папке Reports", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val fileNames = backupFiles.map { it.name }.toTypedArray()
+        AlertDialog.Builder(this)
+            .setTitle("Выберите файл для импорта")
+            .setItems(fileNames) { _, which ->
+                val file = backupFiles[which]
+                AlertDialog.Builder(this)
+                    .setTitle("Импорт данных")
+                    .setMessage("Будут импортированы все данные из файла: ${file.name}\nТекущие данные будут удалены.")
+                    .setPositiveButton("Импортировать") { _, _ ->
+                        scope.launch {
+                            try {
+                                val success = withContext(Dispatchers.IO) {
+                                    DataExporter.importAllData(this@SettingsActivity, file)
+                                }
+                                if (success) {
+                                    ErrorHandler.showSuccess(this@SettingsActivity, "Данные импортированы")
+                                    // Перезагружаем настройки
+                                    loadSettings()
+                                } else {
+                                    ErrorHandler.showError(this@SettingsActivity, "Ошибка импорта данных")
+                                }
+                            } catch (e: Exception) {
+                                ErrorHandler.showError(this@SettingsActivity, "Импорт данных", e)
+                            }
+                        }
+                    }
+                    .setNegativeButton("Отмена", null)
+                    .show()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    private fun clearData() {
+        AlertDialog.Builder(this)
+            .setTitle("Очистить все данные?")
+            .setMessage("Все категории, подкатегории, переменные, шаблоны и отчеты будут удалены.\nЭто действие невозможно отменить.")
+            .setPositiveButton("Очистить") { _, _ ->
+                scope.launch {
+                    try {
+                        withContext(Dispatchers.IO) {
+                            // Очищаем все таблицы
+                            db.categoryDao().getAll().forEach { db.categoryDao().delete(it) }
+                            db.subcategoryDao().getAll().forEach { db.subcategoryDao().delete(it) }
+                            db.variableDao().getAll().forEach { db.variableDao().delete(it) }
+                            db.templateDao().getAll().forEach { db.templateDao().delete(it) }
+                            db.reportDao().getAll().forEach { db.reportDao().delete(it) }
+                        }
+                        ErrorHandler.showSuccess(this@SettingsActivity, "Все данные очищены")
+                    } catch (e: Exception) {
+                        ErrorHandler.showError(this@SettingsActivity, "Очистка данных", e)
+                    }
+                }
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
     }
 }
