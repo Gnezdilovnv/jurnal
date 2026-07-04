@@ -16,7 +16,6 @@ import com.example.reports.data.AppDatabase
 import com.example.reports.data.Report
 import com.example.reports.data.Template
 import com.example.reports.data.Variable
-import com.example.reports.utils.Logger
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -261,7 +260,10 @@ class CreateReportActivity : AppCompatActivity() {
                 android.R.layout.simple_spinner_item,
                 options
             )
-            this.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Используем правильный вызов для установки выпадающего списка
+            val adapter = this.adapter as? ArrayAdapter<String>
+            adapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                     fieldValues[variable.name] = options[position]
