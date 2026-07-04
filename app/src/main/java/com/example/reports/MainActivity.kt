@@ -2,16 +2,14 @@ package com.example.reports
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.Toast
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.example.reports.ui.*
 import com.example.reports.utils.Logger
-import com.example.reports.utils.ErrorHandler
-import kotlinx.coroutines.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
-    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,20 +18,36 @@ class MainActivity : AppCompatActivity() {
         Logger.init(this)
         Logger.writeLog("MainActivity started")
 
-        findViewById<Button>(R.id.btnCreateReport).setOnClickListener {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNav.setOnItemSelectedListener { menuItem: MenuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_home -> {
+                    // Уже на главной
+                    true
+                }
+                R.id.nav_templates -> {
+                    startActivity(Intent(this, TemplatesActivity::class.java))
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                R.id.nav_reports -> {
+                    startActivity(Intent(this, ReportsListActivity::class.java))
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                R.id.nav_settings -> {
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                else -> false
+            }
+        }
+
+        // FAB для быстрого создания отчета
+        val fab = findViewById<FloatingActionButton>(R.id.fab_create_report)
+        fab.setOnClickListener {
             startActivity(Intent(this, CreateReportActivity::class.java))
-        }
-
-        findViewById<Button>(R.id.btnReportsList).setOnClickListener {
-            startActivity(Intent(this, ReportsListActivity::class.java))
-        }
-
-        findViewById<Button>(R.id.btnTemplates).setOnClickListener {
-            startActivity(Intent(this, TemplatesActivity::class.java))
-        }
-
-        findViewById<Button>(R.id.btnSettings).setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
 }
