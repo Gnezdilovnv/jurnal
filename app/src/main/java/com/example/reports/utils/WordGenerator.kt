@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object WordGenerator {
-    
+
     fun generateDocx(
         context: Context,
         fileName: String,
@@ -28,39 +28,40 @@ object WordGenerator {
 
             // Создаем файл
             val file = File(reportsDir, "$fileName.docx")
-            
+
             // Создаем документ
             val document = XWPFDocument()
-            
+
             // Добавляем заголовок
             val titleParagraph = document.createParagraph()
-            titleParagraph.alignment = XWPFParagraph.ALIGN_CENTER
+            titleParagraph.alignment = XWPFParagraph.Alignment.CENTER
             val titleRun = titleParagraph.createRun()
-            titleRun.text = fileName
+            titleRun.setText(fileName)
             titleRun.isBold = true
             titleRun.fontSize = 18
-            
+
             // Добавляем дату
             val dateParagraph = document.createParagraph()
-            dateParagraph.alignment = XWPFParagraph.ALIGN_RIGHT
+            dateParagraph.alignment = XWPFParagraph.Alignment.RIGHT
             val dateRun = dateParagraph.createRun()
-            dateRun.text = "Создано: ${SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date())}"
+            dateRun.setText("Создано: ${SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date())}")
             dateRun.fontSize = 10
-            
+
             // Пустая строка
             document.createParagraph()
-            
+
             // Добавляем содержимое
             val contentParagraph = document.createParagraph()
             val contentRun = contentParagraph.createRun()
-            contentRun.text = content
+            contentRun.setText(content)
             contentRun.fontSize = 12
-            
+
             // Сохраняем
             FileOutputStream(file).use { out ->
                 document.write(out)
             }
-            
+            document.close()
+
             Logger.writeLog("Word файл создан: ${file.absolutePath}")
             file
         } catch (e: Exception) {
