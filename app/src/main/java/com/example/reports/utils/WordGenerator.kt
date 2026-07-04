@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Environment
 import org.apache.poi.xwpf.usermodel.XWPFDocument
 import org.apache.poi.xwpf.usermodel.XWPFParagraph
-import org.apache.poi.xwpf.usermodel.XWPFRun
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -32,17 +31,17 @@ object WordGenerator {
             // Создаем документ
             val document = XWPFDocument()
 
-            // Добавляем заголовок
+            // Добавляем заголовок (выравнивание по центру)
             val titleParagraph = document.createParagraph()
-            titleParagraph.alignment = XWPFParagraph.Alignment.CENTER
+            titleParagraph.setAlignment(XWPFParagraph.ALIGN_CENTER)
             val titleRun = titleParagraph.createRun()
             titleRun.setText(fileName)
             titleRun.isBold = true
             titleRun.fontSize = 18
 
-            // Добавляем дату
+            // Добавляем дату (выравнивание по правому краю)
             val dateParagraph = document.createParagraph()
-            dateParagraph.alignment = XWPFParagraph.Alignment.RIGHT
+            dateParagraph.setAlignment(XWPFParagraph.ALIGN_RIGHT)
             val dateRun = dateParagraph.createRun()
             dateRun.setText("Создано: ${SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date())}")
             dateRun.fontSize = 10
