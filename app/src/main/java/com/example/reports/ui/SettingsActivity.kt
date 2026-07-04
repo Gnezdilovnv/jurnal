@@ -1,5 +1,6 @@
 package com.example.reports.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -32,7 +33,6 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
         Logger.writeLog("SettingsActivity started")
-
         initViews()
         setupSpinners()
         loadSettings()
@@ -54,23 +54,29 @@ class SettingsActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
         findViewById<Button>(R.id.btnSave).setOnClickListener { saveSettings() }
-        findViewById<Button>(R.id.btnExport).setOnClickListener {
-            Toast.makeText(this, "Экспорт данных (в разработке)", Toast.LENGTH_SHORT).show()
-        }
-        findViewById<Button>(R.id.btnImport).setOnClickListener {
-            Toast.makeText(this, "Импорт данных (в разработке)", Toast.LENGTH_SHORT).show()
-        }
+
+        // Кнопки управления — ПЕРЕХОДЫ
         findViewById<Button>(R.id.btnCategories).setOnClickListener {
-            startActivity(android.content.Intent(this, CategoriesActivity::class.java))
+            Logger.writeLog("Open Categories")
+            startActivity(Intent(this, CategoriesActivity::class.java))
         }
         findViewById<Button>(R.id.btnVariables).setOnClickListener {
-            startActivity(android.content.Intent(this, VariablesActivity::class.java))
+            Logger.writeLog("Open Variables")
+            startActivity(Intent(this, VariablesActivity::class.java))
         }
         findViewById<Button>(R.id.btnTemplates).setOnClickListener {
-            startActivity(android.content.Intent(this, TemplatesActivity::class.java))
+            Logger.writeLog("Open Templates")
+            startActivity(Intent(this, TemplatesActivity::class.java))
+        }
+
+        findViewById<Button>(R.id.btnExport).setOnClickListener {
+            Toast.makeText(this, "Экспорт данных", Toast.LENGTH_SHORT).show()
+        }
+        findViewById<Button>(R.id.btnImport).setOnClickListener {
+            Toast.makeText(this, "Импорт данных", Toast.LENGTH_SHORT).show()
         }
         findViewById<Button>(R.id.btnClearData).setOnClickListener {
-            Toast.makeText(this, "Очистка данных (в разработке)", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Очистка данных", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -96,7 +102,6 @@ class SettingsActivity : AppCompatActivity() {
                     settings = loaded
                     applySettings()
                 }
-                Logger.writeLog("Settings loaded")
             } catch (e: Exception) {
                 Logger.writeError("Load settings error", e)
             }
@@ -115,27 +120,6 @@ class SettingsActivity : AppCompatActivity() {
         } else {
             setUserMode()
         }
-
-        val folderIndex = when (settings.saveFolder) {
-            "Documents" -> 1
-            "Внешняя SD карта" -> 2
-            "Своя папка" -> 3
-            else -> 0
-        }
-        spinnerSaveFolder.setSelection(folderIndex)
-
-        val formatIndex = when {
-            settings.formatPdf -> 1
-            settings.formatTxt -> 2
-            else -> 0
-        }
-        spinnerFormat.setSelection(formatIndex)
-
-        if (settings.darkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
     }
 
     private fun setupListeners() {
@@ -152,7 +136,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setUserMode() {
-        settings = settings.copy(settingsMode = "user")
         userModeLayout.visibility = android.view.View.VISIBLE
         devModeLayout.visibility = android.view.View.GONE
         btnUserMode.setBackgroundColor(getColor(R.color.primary))
@@ -162,7 +145,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setDevMode() {
-        settings = settings.copy(settingsMode = "dev")
         userModeLayout.visibility = android.view.View.VISIBLE
         devModeLayout.visibility = android.view.View.VISIBLE
         btnDevMode.setBackgroundColor(getColor(R.color.primary))
@@ -200,7 +182,6 @@ class SettingsActivity : AppCompatActivity() {
                 withContext(Dispatchers.IO) {
                     db.settingsDao().insert(settings)
                 }
-                Logger.writeLog("Settings saved")
                 Toast.makeText(this@SettingsActivity, "Настройки сохранены", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 Logger.writeError("Save settings error", e)

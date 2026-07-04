@@ -26,7 +26,6 @@ class VariablesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_variables)
 
         Logger.writeLog("VariablesActivity started")
-
         recyclerView = findViewById(R.id.recyclerVariables)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -42,27 +41,31 @@ class VariablesActivity : AppCompatActivity() {
                 variables = withContext(Dispatchers.IO) {
                     db.variableDao().getAll()
                 }
-                val items = variables.map { "${it.name} (${it.type}) - ${it.displayName}" }
-                val adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-                    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-                        val view = LayoutInflater.from(parent.context)
-                            .inflate(android.R.layout.simple_list_item_1, parent, false)
-                        return object : RecyclerView.ViewHolder(view) {}
-                    }
-
-                    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-                        val tv = holder.itemView as TextView
-                        tv.text = items[position]
-                    }
-
-                    override fun getItemCount() = items.size
-                }
-                recyclerView.adapter = adapter
-                Logger.writeLog("Loaded ${variables.size} variables")
+                updateAdapter()
             } catch (e: Exception) {
                 Logger.writeError("Load variables error", e)
+                Toast.makeText(this@VariablesActivity, "Ошибка загрузки", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun updateAdapter() {
+        val items = variables.map { "${it.name} (${it.type}) - ${it.displayName}" }
+        val adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(android.R.layout.simple_list_item_1, parent, false)
+                return object : RecyclerView.ViewHolder(view) {}
+            }
+
+            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+                val tv = holder.itemView as TextView
+                tv.text = items[position]
+            }
+
+            override fun getItemCount() = items.size
+        }
+        recyclerView.adapter = adapter
     }
 
     private fun showAddDialog() {
@@ -71,8 +74,6 @@ class VariablesActivity : AppCompatActivity() {
         val etDisplayName = dialogView.findViewById<EditText>(R.id.etVarDisplayName)
         val spinnerType = dialogView.findViewById<Spinner>(R.id.spinnerVarType)
         val chkShowInAll = dialogView.findViewById<CheckBox>(R.id.chkShowInAll)
-        val spinnerCategory = dialogView.findViewById<Spinner>(R.id.spinnerCategory)
-        val spinnerSubcategory = dialogView.findViewById<Spinner>(R.id.spinnerSubcategory)
         val chkRequired = dialogView.findViewById<CheckBox>(R.id.chkRequired)
         val btnSave = dialogView.findViewById<Button>(R.id.btnSaveVar)
 
