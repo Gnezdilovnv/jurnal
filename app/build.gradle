@@ -54,6 +54,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
 
+    // Gson для Converters
+    implementation 'com.google.code.gson:gson:2.10.1'
+
     // Apache POI для работы с DOCX
     implementation 'org.apache.poi:poi:5.2.5'
     implementation 'org.apache.poi:poi-ooxml:5.2.5'
