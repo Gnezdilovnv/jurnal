@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.reports.R
 import com.example.reports.data.AppDatabase
 import com.example.reports.data.Template
-import com.example.reports.utils.Logger
+import com.example.reports.utils.ErrorHandler
 import kotlinx.coroutines.*
 
 class TemplatesActivity : AppCompatActivity() {
@@ -42,7 +42,7 @@ class TemplatesActivity : AppCompatActivity() {
                 templates = withContext(Dispatchers.IO) { db.templateDao().getAll() }
                 updateAdapter()
             } catch (e: Exception) {
-                Toast.makeText(this@TemplatesActivity, "Ошибка загрузки", Toast.LENGTH_SHORT).show()
+                ErrorHandler.showError(this@TemplatesActivity, "Загрузка шаблонов", e)
             }
         }
     }
@@ -86,9 +86,9 @@ class TemplatesActivity : AppCompatActivity() {
                     try {
                         withContext(Dispatchers.IO) { db.templateDao().delete(template) }
                         loadTemplates()
-                        Toast.makeText(this@TemplatesActivity, "Шаблон удален", Toast.LENGTH_SHORT).show()
+                        ErrorHandler.showSuccess(this@TemplatesActivity, "Шаблон удален")
                     } catch (e: Exception) {
-                        Toast.makeText(this@TemplatesActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
+                        ErrorHandler.showError(this@TemplatesActivity, "Удаление шаблона", e)
                     }
                 }
             }

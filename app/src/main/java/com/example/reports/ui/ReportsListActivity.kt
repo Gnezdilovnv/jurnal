@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.reports.R
 import com.example.reports.data.AppDatabase
 import com.example.reports.data.Report
+import com.example.reports.utils.ErrorHandler
 import com.example.reports.utils.Logger
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
@@ -38,9 +39,12 @@ class ReportsListActivity : AppCompatActivity() {
         scope.launch {
             try {
                 reports = withContext(Dispatchers.IO) { db.reportDao().getAll() }
+                if (reports.isEmpty()) {
+                    Toast.makeText(this@ReportsListActivity, "Нет сохраненных отчетов", Toast.LENGTH_LONG).show()
+                }
                 updateAdapter()
             } catch (e: Exception) {
-                Toast.makeText(this@ReportsListActivity, "Ошибка загрузки", Toast.LENGTH_SHORT).show()
+                ErrorHandler.showError(this@ReportsListActivity, "Загрузка отчетов", e)
             }
         }
     }
@@ -101,9 +105,9 @@ class ReportsListActivity : AppCompatActivity() {
                     try {
                         withContext(Dispatchers.IO) { db.reportDao().delete(report) }
                         loadReports()
-                        Toast.makeText(this@ReportsListActivity, "Отчет удален", Toast.LENGTH_SHORT).show()
+                        ErrorHandler.showSuccess(this@ReportsListActivity, "Отчет удален")
                     } catch (e: Exception) {
-                        Toast.makeText(this@ReportsListActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
+                        ErrorHandler.showError(this@ReportsListActivity, "Удаление отчета", e)
                     }
                 }
             }

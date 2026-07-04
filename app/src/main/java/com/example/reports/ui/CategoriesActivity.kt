@@ -40,7 +40,7 @@ class CategoriesActivity : AppCompatActivity() {
                 subcategories = withContext(Dispatchers.IO) { db.subcategoryDao().getAll() }
                 updateAdapter()
             } catch (e: Exception) {
-                Toast.makeText(this@CategoriesActivity, "Ошибка загрузки", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@CategoriesActivity, "Ошибка загрузки: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -62,15 +62,18 @@ class CategoriesActivity : AppCompatActivity() {
                 val subCount = subcategories.count { it.categoryId == category.id }
                 tvSubCount.text = "$subCount подкатегорий"
 
+                // Клик — редактирование
                 holder.itemView.setOnClickListener {
                     showEditCategoryDialog(category)
                 }
 
+                // Долгий клик — удаление
                 holder.itemView.setOnLongClickListener {
                     showDeleteCategoryDialog(category)
                     true
                 }
 
+                // Кнопка подкатегорий
                 btnSub.setOnClickListener {
                     showSubcategoriesDialog(category)
                 }
@@ -106,6 +109,7 @@ class CategoriesActivity : AppCompatActivity() {
             scope.launch {
                 try {
                     val category = Category(id = id, name = name)
+                    Logger.writeLog("Создана категория: $name (ID: $id)")
                     withContext(Dispatchers.IO) { db.categoryDao().insert(category) }
                     loadData()
                     Toast.makeText(this@CategoriesActivity, "Категория создана", Toast.LENGTH_SHORT).show()
@@ -201,13 +205,13 @@ class CategoriesActivity : AppCompatActivity() {
                 // Клик по подкатегории — редактирование
                 listView.setOnItemClickListener { _, _, position, _ ->
                     val sub = subs[position]
-                    showEditSubcategoryDialog(sub, category)
+                    showEditSubcategoryDialog(sub)
                 }
 
                 // Долгий клик по подкатегории — удаление
                 listView.setOnItemLongClickListener { _, _, position, _ ->
                     val sub = subs[position]
-                    showDeleteSubcategoryDialog(sub, category)
+                    showDeleteSubcategoryDialog(sub)
                     true
                 }
             }
@@ -249,7 +253,7 @@ class CategoriesActivity : AppCompatActivity() {
     }
 
     // ========== РЕДАКТИРОВАНИЕ ПОДКАТЕГОРИИ ==========
-    private fun showEditSubcategoryDialog(sub: Subcategory, category: Category) {
+    private fun showEditSubcategoryDialog(sub: Subcategory) {
         val input = EditText(this)
         input.setText(sub.name)
 
@@ -277,10 +281,10 @@ class CategoriesActivity : AppCompatActivity() {
     }
 
     // ========== УДАЛЕНИЕ ПОДКАТЕГОРИИ ==========
-    private fun showDeleteSubcategoryDialog(sub: Subcategory, category: Category) {
+    private fun showDeleteSubcategoryDialog(sub: Subcategory) {
         AlertDialog.Builder(this)
             .setTitle("Удалить подкатегорию?")
-            .setMessage("${sub.name} (${sub.id})\nПеременные, привязанные к ней, потеряют связь")
+            .setMessage("${sub.name} (${sub.id})")
             .setPositiveButton("Удалить") { _, _ ->
                 scope.launch {
                     try {
