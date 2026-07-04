@@ -2,6 +2,7 @@ package com.example.reports.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -18,9 +19,10 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var etFileName: EditText
     private lateinit var spinnerSaveFolder: Spinner
     private lateinit var spinnerFormat: Spinner
-    private lateinit var switchDarkMode: Switch
+    private lateinit var switchDarkMode: androidx.appcompat.widget.SwitchCompat
     private lateinit var btnUserMode: Button
     private lateinit var btnDevMode: Button
+    private lateinit var tvModeHint: TextView
     private lateinit var userModeLayout: LinearLayout
     private lateinit var devModeLayout: LinearLayout
 
@@ -32,11 +34,10 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        Logger.writeLog("SettingsActivity started")
         initViews()
         setupSpinners()
-        loadSettings()
         setupListeners()
+        loadSettings()
     }
 
     private fun initViews() {
@@ -49,39 +50,36 @@ class SettingsActivity : AppCompatActivity() {
         switchDarkMode = findViewById(R.id.switchDarkMode)
         btnUserMode = findViewById(R.id.btnUserMode)
         btnDevMode = findViewById(R.id.btnDevMode)
+        tvModeHint = findViewById(R.id.tvModeHint)
         userModeLayout = findViewById(R.id.userModeLayout)
         devModeLayout = findViewById(R.id.devModeLayout)
 
-        findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
-        findViewById<Button>(R.id.btnSave).setOnClickListener { saveSettings() }
+        findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
+        findViewById<View>(R.id.btnSave).setOnClickListener { saveSettings() }
 
-        // Кнопки управления — ПЕРЕХОДЫ
-        findViewById<Button>(R.id.btnCategories).setOnClickListener {
-            Logger.writeLog("Open Categories")
+        // Переходы
+        findViewById<View>(R.id.btnCategories).setOnClickListener {
             startActivity(Intent(this, CategoriesActivity::class.java))
         }
-        findViewById<Button>(R.id.btnVariables).setOnClickListener {
-            Logger.writeLog("Open Variables")
+        findViewById<View>(R.id.btnVariables).setOnClickListener {
             startActivity(Intent(this, VariablesActivity::class.java))
         }
-        findViewById<Button>(R.id.btnTemplates).setOnClickListener {
-            Logger.writeLog("Open Templates")
+        findViewById<View>(R.id.btnTemplates).setOnClickListener {
             startActivity(Intent(this, TemplatesActivity::class.java))
         }
-
-        findViewById<Button>(R.id.btnExport).setOnClickListener {
+        findViewById<View>(R.id.btnExport).setOnClickListener {
             Toast.makeText(this, "Экспорт данных", Toast.LENGTH_SHORT).show()
         }
-        findViewById<Button>(R.id.btnImport).setOnClickListener {
+        findViewById<View>(R.id.btnImport).setOnClickListener {
             Toast.makeText(this, "Импорт данных", Toast.LENGTH_SHORT).show()
         }
-        findViewById<Button>(R.id.btnClearData).setOnClickListener {
+        findViewById<View>(R.id.btnClearData).setOnClickListener {
             Toast.makeText(this, "Очистка данных", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun setupSpinners() {
-        val folders = arrayOf("Downloads", "Documents", "Внешняя SD карта", "Своя папка")
+        val folders = arrayOf("Загрузки (Downloads)", "Документы (Documents)", "Внешняя SD карта", "Своя папка")
         val folderAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, folders)
         folderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerSaveFolder.adapter = folderAdapter
@@ -90,6 +88,19 @@ class SettingsActivity : AppCompatActivity() {
         val formatAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, formats)
         formatAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerFormat.adapter = formatAdapter
+    }
+
+    private fun setupListeners() {
+        btnUserMode.setOnClickListener { setUserMode() }
+        btnDevMode.setOnClickListener { setDevMode() }
+
+        switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
     }
 
     private fun loadSettings() {
@@ -120,37 +131,43 @@ class SettingsActivity : AppCompatActivity() {
         } else {
             setUserMode()
         }
-    }
 
-    private fun setupListeners() {
-        btnUserMode.setOnClickListener { setUserMode() }
-        btnDevMode.setOnClickListener { setDevMode() }
-
-        switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
+        val folderIndex = when (settings.saveFolder) {
+            "Документы (Documents)" -> 1
+            "Внешняя SD карта" -> 2
+            "Своя папка" -> 3
+            else -> 0
         }
+        spinnerSaveFolder.setSelection(folderIndex)
+
+        val formatIndex = when {
+            settings.formatPdf -> 1
+            settings.formatTxt -> 2
+            else -> 0
+        }
+        spinnerFormat.setSelection(formatIndex)
     }
 
     private fun setUserMode() {
-        userModeLayout.visibility = android.view.View.VISIBLE
-        devModeLayout.visibility = android.view.View.GONE
-        btnUserMode.setBackgroundColor(getColor(R.color.primary))
-        btnUserMode.setTextColor(getColor(android.R.color.white))
-        btnDevMode.setBackgroundColor(getColor(R.color.surface))
-        btnDevMode.setTextColor(getColor(R.color.primary))
+        settings = settings.copy(settingsMode = "user")
+        userModeLayout.visibility = View.VISIBLE
+        devModeLayout.visibility = View.GONE
+        btnUserMode.background = getDrawable(R.drawable.mode_button_active)
+        btnUserMode.setTextColor(getColor(android.R.color.black))
+        btnDevMode.background = getDrawable(R.drawable.mode_button)
+        btnDevMode.setTextColor(getColor(R.color.text_secondary))
+        tvModeHint.text = "🔴 Режим пользователя — только основные настройки."
     }
 
     private fun setDevMode() {
-        userModeLayout.visibility = android.view.View.VISIBLE
-        devModeLayout.visibility = android.view.View.VISIBLE
-        btnDevMode.setBackgroundColor(getColor(R.color.primary))
-        btnDevMode.setTextColor(getColor(android.R.color.white))
-        btnUserMode.setBackgroundColor(getColor(R.color.surface))
-        btnUserMode.setTextColor(getColor(R.color.primary))
+        settings = settings.copy(settingsMode = "dev")
+        userModeLayout.visibility = View.VISIBLE
+        devModeLayout.visibility = View.VISIBLE
+        btnDevMode.background = getDrawable(R.drawable.mode_button_active)
+        btnDevMode.setTextColor(getColor(android.R.color.black))
+        btnUserMode.background = getDrawable(R.drawable.mode_button)
+        btnUserMode.setTextColor(getColor(R.color.text_secondary))
+        tvModeHint.text = "🛠️ Режим разработчика — все настройки приложения."
     }
 
     private fun saveSettings() {
@@ -165,10 +182,10 @@ class SettingsActivity : AppCompatActivity() {
             emailBody = emailBody,
             fileNameTemplate = fileName.ifEmpty { "Отчет_{date}_{group}" },
             saveFolder = when (spinnerSaveFolder.selectedItemPosition) {
-                1 -> "Documents"
+                1 -> "Документы (Documents)"
                 2 -> "Внешняя SD карта"
                 3 -> "Своя папка"
-                else -> "Downloads"
+                else -> "Загрузки (Downloads)"
             },
             formatDocx = spinnerFormat.selectedItemPosition == 0,
             formatPdf = spinnerFormat.selectedItemPosition == 1,
@@ -183,8 +200,8 @@ class SettingsActivity : AppCompatActivity() {
                     db.settingsDao().insert(settings)
                 }
                 Toast.makeText(this@SettingsActivity, "Настройки сохранены", Toast.LENGTH_SHORT).show()
+                finish()
             } catch (e: Exception) {
-                Logger.writeError("Save settings error", e)
                 Toast.makeText(this@SettingsActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
