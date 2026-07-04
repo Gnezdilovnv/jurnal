@@ -78,12 +78,10 @@ class VariablesActivity : AppCompatActivity() {
                 val tv = holder.itemView as TextView
                 tv.text = items[position]
                 
-                // Клик — редактирование
                 holder.itemView.setOnClickListener {
                     showEditDialog(variables[position])
                 }
                 
-                // Долгий клик — удаление
                 holder.itemView.setOnLongClickListener {
                     showDeleteDialog(variables[position])
                     true
@@ -95,7 +93,6 @@ class VariablesActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
     }
 
-    // ========== ДИАЛОГ СОЗДАНИЯ ПЕРЕМЕННОЙ ==========
     private fun showAddDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_variable, null)
         val etName = dialogView.findViewById<EditText>(R.id.etVarName)
@@ -148,7 +145,6 @@ class VariablesActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    // ========== РЕДАКТИРОВАНИЕ ПЕРЕМЕННОЙ ==========
     private fun showEditDialog(variable: Variable) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_variable, null)
         val etName = dialogView.findViewById<EditText>(R.id.etVarName)
@@ -160,37 +156,30 @@ class VariablesActivity : AppCompatActivity() {
         val chkRequired = dialogView.findViewById<CheckBox>(R.id.chkRequired)
         val btnSave = dialogView.findViewById<Button>(R.id.btnSaveVar)
 
-        // Заполняем текущими значениями
         etName.setText(variable.name)
         etDisplayName.setText(variable.displayName)
         chkRequired.isChecked = variable.isRequired
 
         setupTypeSpinner(spinnerType)
-        spinnerType.setSelection(listOf("TEXT", "NUMBER", "DATE", "TIME", "BOOLEAN", "SELECT", "LOCATION").indexOf(variable.type))
+        val typeIndex = listOf("TEXT", "NUMBER", "DATE", "TIME", "BOOLEAN", "SELECT", "LOCATION").indexOf(variable.type)
+        if (typeIndex >= 0) spinnerType.setSelection(typeIndex)
 
-        // Устанавливаем принадлежность
-        val scopeIndex = when {
-            variable.showInAll -> 0
-            variable.subcategoryId != null -> 2
-            else -> 1
-        }
-        rgScope.check(R.id.rbGlobal)
-        when (scopeIndex) {
-            0 -> rgScope.check(R.id.rbGlobal)
-            1 -> rgScope.check(R.id.rbRoot)
-            2 -> rgScope.check(R.id.rbSub)
+        when {
+            variable.showInAll -> rgScope.check(R.id.rbGlobal)
+            variable.subcategoryId != null -> rgScope.check(R.id.rbSub)
+            else -> rgScope.check(R.id.rbRoot)
         }
 
         setupCategorySpinners(spinnerCategory, spinnerSubcategory)
         setupScopeListeners(rgScope, spinnerCategory, spinnerSubcategory)
 
-        // Устанавливаем выбранные категории
         if (variable.subcategoryId != null) {
             val sub = subcategories.find { it.id == variable.subcategoryId }
             if (sub != null) {
                 val catIndex = categories.indexOfFirst { it.id == sub.categoryId }
                 if (catIndex >= 0) spinnerCategory.setSelection(catIndex)
-                val subIndex = subcategories.filter { it.categoryId == sub.categoryId }.indexOfFirst { it.id == sub.id }
+                val subList = subcategories.filter { it.categoryId == sub.categoryId }
+                val subIndex = subList.indexOfFirst { it.id == sub.id }
                 if (subIndex >= 0) spinnerSubcategory.setSelection(subIndex)
             }
         }
@@ -232,11 +221,10 @@ class VariablesActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    // ========== УДАЛЕНИЕ ПЕРЕМЕННОЙ ==========
     private fun showDeleteDialog(variable: Variable) {
         AlertDialog.Builder(this)
             .setTitle("Удалить переменную?")
-            .setMessage("${variable.name} (${variable.displayName})\nОна может использоваться в шаблонах")
+            .setMessage("${variable.name} (${variable.displayName})")
             .setPositiveButton("Удалить") { _, _ ->
                 scope.launch {
                     try {
@@ -244,7 +232,7 @@ class VariablesActivity : AppCompatActivity() {
                         loadData()
                         Toast.makeText(this@VariablesActivity, "Переменная удалена", Toast.LENGTH_SHORT).show()
                     } catch (e: Exception) {
-                        Toast.makeText(this@VariablesActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHOW).show()
+                        Toast.makeText(this@VariablesActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -252,7 +240,6 @@ class VariablesActivity : AppCompatActivity() {
             .show()
     }
 
-    // ========== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ==========
     private fun setupTypeSpinner(spinner: Spinner) {
         val types = arrayOf("TEXT", "NUMBER", "DATE", "TIME", "BOOLEAN", "SELECT", "LOCATION")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, types)
@@ -305,7 +292,6 @@ class VariablesActivity : AppCompatActivity() {
                 }
             }
         }
-        // Начальное состояние
         catSpinner.isEnabled = false
         subSpinner.isEnabled = false
     }

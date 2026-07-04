@@ -1,5 +1,6 @@
 package com.example.reports.ui
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -59,14 +60,12 @@ class TemplatesActivity : AppCompatActivity() {
                 val tv = holder.itemView as TextView
                 tv.text = template.name
 
-                // Клик — редактирование
                 holder.itemView.setOnClickListener {
                     val intent = Intent(this@TemplatesActivity, TemplateEditorActivity::class.java)
                     intent.putExtra("template_id", template.id)
                     startActivity(intent)
                 }
 
-                // Долгий клик — удаление
                 holder.itemView.setOnLongClickListener {
                     showDeleteDialog(template)
                     true

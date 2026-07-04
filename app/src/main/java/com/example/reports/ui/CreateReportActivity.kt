@@ -6,6 +6,7 @@ import android.app.TimePickerDialog
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -260,7 +261,7 @@ class CreateReportActivity : AppCompatActivity() {
                 android.R.layout.simple_spinner_item,
                 options
             )
-            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            this.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                     fieldValues[variable.name] = options[position]
@@ -324,7 +325,6 @@ class CreateReportActivity : AppCompatActivity() {
     }
 
     private fun shareReport() {
-        // TODO: реализовать отправку
         Toast.makeText(this, "Отправка отчета", Toast.LENGTH_SHORT).show()
     }
 
