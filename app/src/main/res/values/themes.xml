@@ -1,4 +1,5 @@
 <resources>
+    <!-- Базовые стили -->
     <style name="Theme.ReportsApp" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
@@ -10,6 +11,7 @@
         <item name="android:textColorSecondary">@color/text_secondary</item>
     </style>
 
+    <!-- Кнопки -->
     <style name="ButtonPrimary" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/button_primary</item>
         <item name="android:textColor">@android:color/white</item>
@@ -24,5 +26,28 @@
     <style name="ButtonSecondary" parent="ButtonPrimary">
         <item name="android:background">@drawable/button_secondary</item>
         <item name="android:textColor">@color/primary</item>
+    </style>
+
+    <!-- Карточки -->
+    <style name="CardStyle" parent="Widget.AppCompat.CardView">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardBackgroundColor">@color/surface</item>
+        <item name="contentPadding">16dp</item>
+    </style>
+
+    <!-- Тексты -->
+    <style name="TitleStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+    <style name="SubtitleStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:layout_marginBottom">4dp</item>
     </style>
 </resources>
