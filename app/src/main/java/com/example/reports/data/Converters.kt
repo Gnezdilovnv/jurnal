@@ -1,11 +1,23 @@
 package com.example.reports.data
+
 import androidx.room.TypeConverter
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 class Converters {
-    @TypeConverter fun fromString(value: String): Map<String, String> {
-        return if (value.isEmpty()) emptyMap() else Gson().fromJson(value, object : TypeToken<Map<String, String>>() {}.type)
+    @TypeConverter
+    fun fromString(value: String): Map<String, String> {
+        if (value.isEmpty()) return emptyMap()
+        val map = mutableMapOf<String, String>()
+        value.split(";").forEach { pair ->
+            val parts = pair.split(":")
+            if (parts.size == 2) {
+                map[parts[0]] = parts[1]
+            }
+        }
+        return map
     }
-    @TypeConverter fun fromMap(map: Map<String, String>): String = Gson().toJson(map)
+
+    @TypeConverter
+    fun fromMap(map: Map<String, String>): String {
+        return map.map { "${it.key}:${it.value}" }.joinToString(";")
+    }
 }
