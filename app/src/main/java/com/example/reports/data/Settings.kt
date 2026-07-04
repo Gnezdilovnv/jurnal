@@ -16,6 +16,6 @@ data class Settings(
     val formatPdf: Boolean = false,
     val formatTxt: Boolean = false,
     val darkMode: Boolean = false,
-    val settingsMode: String = "user", // "user" или "dev"
+    val settingsMode: String = "user",
     val updatedAt: Long = System.currentTimeMillis()
 )

@@ -69,13 +69,11 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setupSpinners() {
-        // Место сохранения
         val folders = arrayOf("Downloads", "Documents", "Внешняя SD карта", "Своя папка")
         val folderAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, folders)
         folderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerSaveFolder.adapter = folderAdapter
 
-        // Формат файла
         val formats = arrayOf("DOCX (Word)", "PDF", "TXT")
         val formatAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, formats)
         formatAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -106,14 +104,12 @@ class SettingsActivity : AppCompatActivity() {
         etFileName.setText(settings.fileNameTemplate)
         switchDarkMode.isChecked = settings.darkMode
 
-        // Режим
         if (settings.settingsMode == "dev") {
             setDevMode()
         } else {
             setUserMode()
         }
 
-        // Spinner
         val folderIndex = when (settings.saveFolder) {
             "Documents" -> 1
             "Внешняя SD карта" -> 2
@@ -129,7 +125,6 @@ class SettingsActivity : AppCompatActivity() {
         }
         spinnerFormat.setSelection(formatIndex)
 
-        // Темная тема
         if (settings.darkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {

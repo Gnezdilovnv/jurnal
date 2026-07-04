@@ -22,10 +22,14 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".ui.TemplatesActivity" />
-        <activity android:name=".ui.CreateReportActivity" />
-        <activity android:name=".ui.ReportsListActivity" />
         <activity android:name=".ui.SettingsActivity" />
+        <activity android:name=".ui.CategoriesActivity" />
+        <activity android:name=".ui.SubcategoriesActivity" />
+        <activity android:name=".ui.VariablesActivity" />
+        <activity android:name=".ui.TemplatesActivity" />
+        <activity android:name=".ui.TemplateEditorActivity" />
+        <activity android:name=".ui.ReportsListActivity" />
+        <activity android:name=".ui.CreateReportActivity" />
         
         <meta-data
             android:name="com.google.android.gms.version"
