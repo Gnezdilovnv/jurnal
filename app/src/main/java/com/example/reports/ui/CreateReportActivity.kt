@@ -3,23 +3,30 @@ package com.example.reports.ui
 import android.Manifest
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.example.reports.R
 import com.example.reports.data.AppDatabase
 import com.example.reports.data.Report
 import com.example.reports.data.Template
 import com.example.reports.data.Variable
+import com.example.reports.utils.ErrorHandler
+import com.example.reports.utils.Logger
+import com.example.reports.utils.WordGenerator
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.*
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,6 +37,7 @@ class CreateReportActivity : AppCompatActivity() {
     private lateinit var btnGenerate: Button
     private lateinit var btnSave: Button
     private lateinit var btnSend: Button
+    private lateinit var btnWord: Button
 
     private val db by lazy { AppDatabase.getDatabase(this) }
     private val scope = CoroutineScope(Dispatchers.Main)
@@ -39,6 +47,7 @@ class CreateReportActivity : AppCompatActivity() {
     private val fieldValues = mutableMapOf<String, String>()
     private var lastLocation: Location? = null
     private var generatedText: String = ""
+    private var currentReportId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,12 +64,14 @@ class CreateReportActivity : AppCompatActivity() {
         btnGenerate = findViewById(R.id.btnGenerate)
         btnSave = findViewById(R.id.btnSave)
         btnSend = findViewById(R.id.btnSend)
+        btnWord = findViewById(R.id.btnWord)
 
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
 
         btnGenerate.setOnClickListener { generateReport() }
         btnSave.setOnClickListener { saveReport() }
         btnSend.setOnClickListener { shareReport() }
+        btnWord.setOnClickListener { generateWordFile() }
     }
 
     private fun loadData() {
@@ -91,7 +102,7 @@ class CreateReportActivity : AppCompatActivity() {
                     override fun onNothingSelected(parent: AdapterView<*>) {}
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@CreateReportActivity, "Ошибка загрузки: ${e.message}", Toast.LENGTH_SHORT).show()
+                ErrorHandler.showError(this@CreateReportActivity, "Загрузка данных", e)
             }
         }
     }
@@ -253,27 +264,25 @@ class CreateReportActivity : AppCompatActivity() {
     }
 
     private fun addSelectField(container: LinearLayout, variable: Variable) {
-        val options = variable.options.split(",").map { it.trim() }
+        val options = variable.options.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+        val finalOptions = if (options.isEmpty()) listOf("Нет вариантов") else options
+        
         val spinner = Spinner(this).apply {
             adapter = ArrayAdapter(
                 this@CreateReportActivity,
                 android.R.layout.simple_spinner_item,
-                options
+                finalOptions
             )
-            // Используем правильный вызов для установки выпадающего списка
-            val adapter = this.adapter as? ArrayAdapter<String>
-            adapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                    fieldValues[variable.name] = options[position]
+                    fieldValues[variable.name] = finalOptions[position]
                     generateReport()
                 }
                 override fun onNothingSelected(parent: AdapterView<*>) {}
             }
         }
         container.addView(spinner)
-        fieldValues[variable.name] = options.firstOrNull() ?: ""
+        fieldValues[variable.name] = finalOptions.firstOrNull() ?: ""
     }
 
     private fun addLocationField(container: LinearLayout, variable: Variable) {
@@ -317,17 +326,76 @@ class CreateReportActivity : AppCompatActivity() {
                     status = "draft"
                 )
                 withContext(Dispatchers.IO) {
-                    db.reportDao().insert(report)
+                    currentReportId = db.reportDao().insert(report).toString()
                 }
-                Toast.makeText(this@CreateReportActivity, "Отчет сохранен", Toast.LENGTH_SHORT).show()
+                ErrorHandler.showSuccess(this@CreateReportActivity, "Отчет сохранен")
             } catch (e: Exception) {
-                Toast.makeText(this@CreateReportActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
+                ErrorHandler.showError(this@CreateReportActivity, "Сохранение отчета", e)
             }
         }
     }
 
+    private fun generateWordFile() {
+        if (generatedText.isEmpty()) {
+            Toast.makeText(this, "Сначала заполните отчет", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val fileName = "Отчет_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())}"
+        val file = WordGenerator.generateDocx(
+            context = this,
+            fileName = fileName,
+            content = generatedText,
+            folder = "Reports"
+        )
+
+        if (file != null) {
+            ErrorHandler.showSuccess(this, "Word файл создан: ${file.name}")
+        } else {
+            ErrorHandler.showError(this, "Не удалось создать Word файл")
+        }
+    }
+
     private fun shareReport() {
-        Toast.makeText(this, "Отправка отчета", Toast.LENGTH_SHORT).show()
+        if (generatedText.isEmpty()) {
+            Toast.makeText(this, "Сначала заполните отчет", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Сначала создаем Word файл
+        val fileName = "Отчет_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())}"
+        val file = WordGenerator.generateDocx(
+            context = this,
+            fileName = fileName,
+            content = generatedText,
+            folder = "Reports"
+        )
+
+        if (file == null) {
+            ErrorHandler.showError(this, "Не удалось создать файл для отправки")
+            return
+        }
+
+        try {
+            val uri = FileProvider.getUriForFile(
+                this,
+                "${packageName}.fileprovider",
+                file
+            )
+
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                putExtra(Intent.EXTRA_SUBJECT, fileName)
+                putExtra(Intent.EXTRA_TEXT, "Отчет сгенерирован в приложении")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            startActivity(Intent.createChooser(shareIntent, "Отправить отчет через..."))
+            Logger.writeLog("Отчет отправлен: $fileName")
+        } catch (e: Exception) {
+            ErrorHandler.showError(this, "Ошибка отправки", e)
+        }
     }
 
     private fun checkLocationPermission(): Boolean {

@@ -80,6 +80,15 @@
             style="@style/ButtonSecondary"
             android:layout_marginEnd="8dp" />
         <Button
+            android:id="@+id/btnWord"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="📄 Word"
+            style="@style/ButtonPrimary"
+            android:backgroundTint="@color/orange"
+            android:layout_marginEnd="8dp" />
+        <Button
             android:id="@+id/btnSave"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
