@@ -2,7 +2,6 @@ package com.example.reports.ui
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -175,13 +174,10 @@ class SettingsActivity : AppCompatActivity() {
     private fun exportData() {
         scope.launch {
             try {
-                val file = withContext(Dispatchers.IO) {
-                    DataExporter.exportAllData(this@SettingsActivity)
-                }
+                val file = DataExporter.exportAllData(this@SettingsActivity)
                 if (file != null) {
                     ErrorHandler.showSuccess(this@SettingsActivity, "Данные экспортированы: ${file.name}")
                     
-                    // Предлагаем поделиться файлом
                     try {
                         val uri = FileProvider.getUriForFile(
                             this@SettingsActivity,
@@ -208,7 +204,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun importData() {
-        // Показываем список доступных файлов бэкапа
         val backupFiles = DataExporter.getBackupFiles()
         if (backupFiles.isEmpty()) {
             Toast.makeText(this, "Нет файлов бэкапа в папке Reports", Toast.LENGTH_LONG).show()
@@ -226,12 +221,9 @@ class SettingsActivity : AppCompatActivity() {
                     .setPositiveButton("Импортировать") { _, _ ->
                         scope.launch {
                             try {
-                                val success = withContext(Dispatchers.IO) {
-                                    DataExporter.importAllData(this@SettingsActivity, file)
-                                }
+                                val success = DataExporter.importAllData(this@SettingsActivity, file)
                                 if (success) {
                                     ErrorHandler.showSuccess(this@SettingsActivity, "Данные импортированы")
-                                    // Перезагружаем настройки
                                     loadSettings()
                                 } else {
                                     ErrorHandler.showError(this@SettingsActivity, "Ошибка импорта данных")
@@ -256,7 +248,6 @@ class SettingsActivity : AppCompatActivity() {
                 scope.launch {
                     try {
                         withContext(Dispatchers.IO) {
-                            // Очищаем все таблицы
                             db.categoryDao().getAll().forEach { db.categoryDao().delete(it) }
                             db.subcategoryDao().getAll().forEach { db.subcategoryDao().delete(it) }
                             db.variableDao().getAll().forEach { db.variableDao().delete(it) }
