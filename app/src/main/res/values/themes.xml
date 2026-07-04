@@ -28,8 +28,8 @@
         <item name="android:textColor">@color/primary</item>
     </style>
 
-    <!-- Карточки -->
-    <style name="CardStyle" parent="Widget.AppCompat.CardView">
+    <!-- Карточки - ПРАВИЛЬНЫЙ РОДИТЕЛЬСКИЙ СТИЛЬ -->
+    <style name="CardStyle" parent="CardView">
         <item name="cardCornerRadius">12dp</item>
         <item name="cardElevation">2dp</item>
         <item name="cardBackgroundColor">@color/surface</item>
