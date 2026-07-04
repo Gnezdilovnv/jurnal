@@ -33,7 +33,9 @@ class TemplateEditorActivity : AppCompatActivity() {
     private fun loadVariables() {
         scope.launch {
             try {
-                val vars = withContext(Dispatchers.IO) { db.variableDao().getAll() }
+                val vars = withContext(Dispatchers.IO) { 
+                    db.variableDao().getAll() 
+                }
                 tvVars.text = "Доступны: ${vars.joinToString(", ") { it.name }}"
             } catch (e: Exception) {
                 Toast.makeText(this@TemplateEditorActivity, "Ошибка загрузки", Toast.LENGTH_SHORT).show()

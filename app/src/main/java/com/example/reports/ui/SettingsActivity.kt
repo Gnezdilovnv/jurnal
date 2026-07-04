@@ -78,7 +78,9 @@ class SettingsActivity : AppCompatActivity() {
     private fun loadSettings() {
         scope.launch {
             try {
-                val loaded = withContext(Dispatchers.IO) { db.settingsDao().get() }
+                val loaded = withContext(Dispatchers.IO) { 
+                    db.settingsDao().get() 
+                }
                 if (loaded != null) {
                     settings = loaded
                     applySettings()
@@ -151,7 +153,9 @@ class SettingsActivity : AppCompatActivity() {
 
         scope.launch {
             try {
-                withContext(Dispatchers.IO) { db.settingsDao().insert(settings) }
+                withContext(Dispatchers.IO) { 
+                    db.settingsDao().insert(settings) 
+                }
                 Toast.makeText(this@SettingsActivity, "Настройки сохранены", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 Toast.makeText(this@SettingsActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,7 +38,9 @@ class TemplatesActivity : AppCompatActivity() {
     private fun loadTemplates() {
         scope.launch {
             try {
-                templates = withContext(Dispatchers.IO) { db.templateDao().getAll() }
+                templates = withContext(Dispatchers.IO) { 
+                    db.templateDao().getAll() 
+                }
                 val adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
                         val view = LayoutInflater.from(parent.context)

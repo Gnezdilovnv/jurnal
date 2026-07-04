@@ -34,7 +34,9 @@ class VariablesActivity : AppCompatActivity() {
     private fun loadVariables() {
         scope.launch {
             try {
-                variables = withContext(Dispatchers.IO) { db.variableDao().getAll() }
+                variables = withContext(Dispatchers.IO) { 
+                    db.variableDao().getAll() 
+                }
                 updateAdapter()
             } catch (e: Exception) {
                 Toast.makeText(this@VariablesActivity, "Ошибка загрузки", Toast.LENGTH_SHORT).show()

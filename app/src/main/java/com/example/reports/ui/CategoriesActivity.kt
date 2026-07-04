@@ -37,7 +37,9 @@ class CategoriesActivity : AppCompatActivity() {
     private fun loadCategories() {
         scope.launch {
             try {
-                categories = withContext(Dispatchers.IO) { db.categoryDao().getAll() }
+                categories = withContext(Dispatchers.IO) { 
+                    db.categoryDao().getAll() 
+                }
                 updateAdapter()
             } catch (e: Exception) {
                 Toast.makeText(this@CategoriesActivity, "Ошибка загрузки", Toast.LENGTH_SHORT).show()
