@@ -2,7 +2,11 @@ package com.example.reports.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,20 +46,19 @@ class TemplatesActivity : AppCompatActivity() {
                 templates = withContext(Dispatchers.IO) {
                     db.templateDao().getAll()
                 }
-                val items = templates.map { it.name }
                 val adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-                    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-                        object : RecyclerView.ViewHolder(
-                            LayoutInflater.from(parent.context)
-                                .inflate(android.R.layout.simple_list_item_1, parent, false)
-                        ) {}
-
-                    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-                        val tv = holder.itemView as android.widget.TextView
-                        tv.text = items[position]
+                    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                        val view = LayoutInflater.from(parent.context)
+                            .inflate(android.R.layout.simple_list_item_1, parent, false)
+                        return object : RecyclerView.ViewHolder(view) {}
                     }
 
-                    override fun getItemCount() = items.size
+                    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+                        val tv = holder.itemView as TextView
+                        tv.text = templates[position].name
+                    }
+
+                    override fun getItemCount() = templates.size
                 }
                 recyclerView.adapter = adapter
                 Logger.writeLog("Loaded ${templates.size} templates")

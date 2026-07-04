@@ -2,8 +2,12 @@ package com.example.reports.ui
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,7 +16,6 @@ import com.example.reports.R
 import com.example.reports.data.AppDatabase
 import com.example.reports.data.Category
 import com.example.reports.data.Subcategory
-import com.example.reports.ui.adapters.CategoriesAdapter
 import com.example.reports.utils.Logger
 import kotlinx.coroutines.*
 
@@ -54,19 +57,34 @@ class CategoriesActivity : AppCompatActivity() {
                 Logger.writeLog("Loaded ${cats.size} categories")
             } catch (e: Exception) {
                 Logger.writeError("Load categories error", e)
+                Toast.makeText(this@CategoriesActivity, "Ошибка загрузки", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun updateAdapter() {
-        val adapter = CategoriesAdapter(categories, subCounts) { category ->
-            showSubcategories(category)
+        val adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_category, parent, false)
+                return object : RecyclerView.ViewHolder(view) {}
+            }
+
+            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+                val category = categories[position]
+                val tvName = holder.itemView.findViewById<TextView>(R.id.tvName)
+                val tvSubCount = holder.itemView.findViewById<TextView>(R.id.tvSubCount)
+                tvName.text = category.name
+                val count = subCounts[category.id] ?: 0
+                tvSubCount.text = "$count подкатегорий"
+                holder.itemView.setOnClickListener {
+                    Toast.makeText(this@CategoriesActivity, "Подкатегории для ${category.name}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun getItemCount() = categories.size
         }
         recyclerView.adapter = adapter
-    }
-
-    private fun showSubcategories(category: Category) {
-        Toast.makeText(this, "Подкатегории для ${category.name}", Toast.LENGTH_SHORT).show()
     }
 
     private fun showAddDialog() {

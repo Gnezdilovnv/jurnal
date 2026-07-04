@@ -1,4 +1,5 @@
 package com.example.reports.utils
+
 import android.content.Context
 import android.os.Environment
 import java.io.File
@@ -7,6 +8,7 @@ import java.util.*
 
 object Logger {
     private var logFile: File? = null
+
     fun init(context: Context) {
         try {
             val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -18,9 +20,15 @@ object Logger {
             }
         } catch (_: Exception) {}
     }
+
     fun writeLog(msg: String) {
         try {
             logFile?.appendText("[${SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()).format(Date())}] $msg\n")
         } catch (_: Exception) {}
+    }
+
+    fun writeError(msg: String, e: Throwable? = null) {
+        val errorMsg = if (e != null) "$msg: ${e.message}" else msg
+        writeLog("ERROR: $errorMsg")
     }
 }

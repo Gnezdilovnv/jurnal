@@ -2,6 +2,9 @@ package com.example.reports.ui
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +20,6 @@ class VariablesActivity : AppCompatActivity() {
     private val db by lazy { AppDatabase.getDatabase(this) }
     private val scope = CoroutineScope(Dispatchers.Main)
     private var variables = listOf<Variable>()
-    private lateinit var adapter: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +43,12 @@ class VariablesActivity : AppCompatActivity() {
                     db.variableDao().getAll()
                 }
                 val items = variables.map { "${it.name} (${it.type}) - ${it.displayName}" }
-                adapter = ArrayAdapter(this@VariablesActivity, android.R.layout.simple_list_item_1, items)
-                recyclerView.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-                    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-                        object : RecyclerView.ViewHolder(
-                            LayoutInflater.from(parent.context)
-                                .inflate(android.R.layout.simple_list_item_1, parent, false)
-                        ) {}
+                val adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                        val view = LayoutInflater.from(parent.context)
+                            .inflate(android.R.layout.simple_list_item_1, parent, false)
+                        return object : RecyclerView.ViewHolder(view) {}
+                    }
 
                     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
                         val tv = holder.itemView as TextView
@@ -56,6 +57,7 @@ class VariablesActivity : AppCompatActivity() {
 
                     override fun getItemCount() = items.size
                 }
+                recyclerView.adapter = adapter
                 Logger.writeLog("Loaded ${variables.size} variables")
             } catch (e: Exception) {
                 Logger.writeError("Load variables error", e)
@@ -74,22 +76,10 @@ class VariablesActivity : AppCompatActivity() {
         val chkRequired = dialogView.findViewById<CheckBox>(R.id.chkRequired)
         val btnSave = dialogView.findViewById<Button>(R.id.btnSaveVar)
 
-        // Типы
         val types = arrayOf("TEXT", "NUMBER", "DATE", "TIME", "BOOLEAN", "SELECT", "LOCATION")
         val typeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, types)
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerType.adapter = typeAdapter
-
-        // Категории
-        scope.launch {
-            val cats = withContext(Dispatchers.IO) {
-                db.categoryDao().getAll()
-            }
-            val catNames = cats.map { it.name }.toTypedArray()
-            val catAdapter = ArrayAdapter(this@VariablesActivity, android.R.layout.simple_spinner_item, catNames)
-            catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinnerCategory.adapter = catAdapter
-        }
 
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)

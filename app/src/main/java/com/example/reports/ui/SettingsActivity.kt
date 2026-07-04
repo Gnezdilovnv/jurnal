@@ -54,18 +54,24 @@ class SettingsActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
         findViewById<Button>(R.id.btnSave).setOnClickListener { saveSettings() }
-        findViewById<Button>(R.id.btnExport).setOnClickListener { exportData() }
-        findViewById<Button>(R.id.btnImport).setOnClickListener { importData() }
+        findViewById<Button>(R.id.btnExport).setOnClickListener {
+            Toast.makeText(this, "Экспорт данных (в разработке)", Toast.LENGTH_SHORT).show()
+        }
+        findViewById<Button>(R.id.btnImport).setOnClickListener {
+            Toast.makeText(this, "Импорт данных (в разработке)", Toast.LENGTH_SHORT).show()
+        }
         findViewById<Button>(R.id.btnCategories).setOnClickListener {
-            Toast.makeText(this, "Категории (в разработке)", Toast.LENGTH_SHORT).show()
+            startActivity(android.content.Intent(this, CategoriesActivity::class.java))
         }
         findViewById<Button>(R.id.btnVariables).setOnClickListener {
-            Toast.makeText(this, "Переменные (в разработке)", Toast.LENGTH_SHORT).show()
+            startActivity(android.content.Intent(this, VariablesActivity::class.java))
         }
         findViewById<Button>(R.id.btnTemplates).setOnClickListener {
-            Toast.makeText(this, "Шаблоны (в разработке)", Toast.LENGTH_SHORT).show()
+            startActivity(android.content.Intent(this, TemplatesActivity::class.java))
         }
-        findViewById<Button>(R.id.btnClearData).setOnClickListener { clearData() }
+        findViewById<Button>(R.id.btnClearData).setOnClickListener {
+            Toast.makeText(this, "Очистка данных (в разработке)", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupSpinners() {
@@ -146,7 +152,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setUserMode() {
-        settings.settingsMode = "user"
+        settings = settings.copy(settingsMode = "user")
         userModeLayout.visibility = android.view.View.VISIBLE
         devModeLayout.visibility = android.view.View.GONE
         btnUserMode.setBackgroundColor(getColor(R.color.primary))
@@ -156,7 +162,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setDevMode() {
-        settings.settingsMode = "dev"
+        settings = settings.copy(settingsMode = "dev")
         userModeLayout.visibility = android.view.View.VISIBLE
         devModeLayout.visibility = android.view.View.VISIBLE
         btnDevMode.setBackgroundColor(getColor(R.color.primary))
@@ -201,17 +207,5 @@ class SettingsActivity : AppCompatActivity() {
                 Toast.makeText(this@SettingsActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun exportData() {
-        Toast.makeText(this, "Экспорт данных (в разработке)", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun importData() {
-        Toast.makeText(this, "Импорт данных (в разработке)", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun clearData() {
-        Toast.makeText(this, "Очистка данных (в разработке)", Toast.LENGTH_SHORT).show()
     }
 }
