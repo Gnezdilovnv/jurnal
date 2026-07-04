@@ -38,24 +38,67 @@ class TemplatesActivity : AppCompatActivity() {
     private fun loadTemplates() {
         scope.launch {
             try {
-                templates = withContext(Dispatchers.IO) { 
-                    db.templateDao().getAll() 
-                }
-                val adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-                    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-                        val view = LayoutInflater.from(parent.context)
-                            .inflate(android.R.layout.simple_list_item_1, parent, false)
-                        return object : RecyclerView.ViewHolder(view) {}
-                    }
-                    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-                        (holder.itemView as TextView).text = templates[position].name
-                    }
-                    override fun getItemCount() = templates.size
-                }
-                recyclerView.adapter = adapter
+                templates = withContext(Dispatchers.IO) { db.templateDao().getAll() }
+                updateAdapter()
             } catch (e: Exception) {
                 Toast.makeText(this@TemplatesActivity, "Ошибка загрузки", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun updateAdapter() {
+        val adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(android.R.layout.simple_list_item_1, parent, false)
+                return object : RecyclerView.ViewHolder(view) {}
+            }
+
+            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+                val template = templates[position]
+                val tv = holder.itemView as TextView
+                tv.text = template.name
+
+                // Клик — редактирование
+                holder.itemView.setOnClickListener {
+                    val intent = Intent(this@TemplatesActivity, TemplateEditorActivity::class.java)
+                    intent.putExtra("template_id", template.id)
+                    startActivity(intent)
+                }
+
+                // Долгий клик — удаление
+                holder.itemView.setOnLongClickListener {
+                    showDeleteDialog(template)
+                    true
+                }
+            }
+
+            override fun getItemCount() = templates.size
+        }
+        recyclerView.adapter = adapter
+    }
+
+    private fun showDeleteDialog(template: Template) {
+        AlertDialog.Builder(this)
+            .setTitle("Удалить шаблон?")
+            .setMessage("${template.name}\nПосле удаления восстановить будет невозможно")
+            .setPositiveButton("Удалить") { _, _ ->
+                scope.launch {
+                    try {
+                        withContext(Dispatchers.IO) { db.templateDao().delete(template) }
+                        loadTemplates()
+                        Toast.makeText(this@TemplatesActivity, "Шаблон удален", Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception) {
+                        Toast.makeText(this@TemplatesActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadTemplates()
     }
 }

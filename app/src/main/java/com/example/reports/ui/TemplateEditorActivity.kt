@@ -29,15 +29,16 @@ class TemplateEditorActivity : AppCompatActivity() {
     private var filteredVariables = listOf<Variable>()
     private var categories = listOf<com.example.reports.data.Category>()
     private var subcategories = listOf<com.example.reports.data.Subcategory>()
-    private lateinit var varAdapter: ArrayAdapter<String>
+    private var editingTemplateId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_template_editor)
 
+        editingTemplateId = intent.getStringExtra("template_id")
+
         initViews()
         loadData()
-        setupListeners()
     }
 
     private fun initViews() {
@@ -60,6 +61,17 @@ class TemplateEditorActivity : AppCompatActivity() {
                 categories = withContext(Dispatchers.IO) { db.categoryDao().getAll() }
                 subcategories = withContext(Dispatchers.IO) { db.subcategoryDao().getAll() }
 
+                // Если редактируем, загружаем шаблон
+                if (editingTemplateId != null) {
+                    val template = withContext(Dispatchers.IO) {
+                        db.templateDao().getById(editingTemplateId!!)
+                    }
+                    template?.let {
+                        etName.setText(it.name)
+                        etText.setText(it.text)
+                    }
+                }
+
                 setupSpinners()
                 filterVariables()
                 updateVariablesList()
@@ -70,13 +82,11 @@ class TemplateEditorActivity : AppCompatActivity() {
     }
 
     private fun setupSpinners() {
-        // Категории
         val catNames = listOf("Все категории") + categories.map { it.name }
         val catAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, catNames)
         catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCategory.adapter = catAdapter
 
-        // Подкатегории (загружаем после выбора категории)
         fun updateSubcategories(categoryId: String?) {
             val subs = if (categoryId == null) {
                 listOf("Все подкатегории")
@@ -107,7 +117,6 @@ class TemplateEditorActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        // Инициализация
         if (categories.isNotEmpty()) {
             updateSubcategories(categories[0].id)
         }
@@ -120,43 +129,30 @@ class TemplateEditorActivity : AppCompatActivity() {
         filteredVariables = allVariables.filter { variable ->
             var matches = true
 
-            // Глобальные всегда показываем
-            if (variable.showInAll) {
-                return@filter true
-            }
+            if (variable.showInAll) return@filter true
 
-            // Фильтр по категории
             if (catName != "Все категории") {
                 val category = categories.find { it.name == catName }
                 if (category != null) {
-                    // Проверяем привязку к подкатегории
                     if (variable.subcategoryId != null) {
                         val sub = subcategories.find { it.id == variable.subcategoryId }
-                        if (sub?.categoryId != category.id) {
-                            matches = false
-                        }
+                        if (sub?.categoryId != category.id) matches = false
                     } else {
-                        // Если переменная привязана только к корневой категории
-                        // (проверяем через subcategoryId == null и не showInAll)
                         matches = false
                     }
                 }
             }
 
-            // Фильтр по подкатегории
             if (matches && subName != "Все подкатегории") {
                 val subcategory = subcategories.find { it.name == subName }
                 if (subcategory != null) {
-                    if (variable.subcategoryId != subcategory.id) {
-                        matches = false
-                    }
+                    if (variable.subcategoryId != subcategory.id) matches = false
                 }
             }
 
             matches
         }
 
-        // Добавляем глобальные переменные
         val globalVars = allVariables.filter { it.showInAll }
         filteredVariables = (filteredVariables + globalVars).distinctBy { it.id }
     }
@@ -172,10 +168,9 @@ class TemplateEditorActivity : AppCompatActivity() {
 
             override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
                 val tv = holder.itemView as TextView
-                val varName = filteredVariables[position].name
                 tv.text = varNames[position]
                 tv.setOnClickListener {
-                    // Вставляем переменную в текст
+                    val varName = filteredVariables[position].name
                     val currentText = etText.text.toString()
                     val cursorPosition = etText.selectionStart
                     val newText = currentText.substring(0, cursorPosition) +
@@ -189,13 +184,7 @@ class TemplateEditorActivity : AppCompatActivity() {
             override fun getItemCount() = varNames.size
         }
         recyclerVariables.adapter = adapter
-
         tvVars.text = "Доступно: ${filteredVariables.size} переменных (нажмите для вставки)"
-    }
-
-    private fun setupListeners() {
-        // Дополнительная фильтрация при изменении категорий
-        // уже настроена в spinners
     }
 
     private fun saveTemplate() {
@@ -209,10 +198,24 @@ class TemplateEditorActivity : AppCompatActivity() {
 
         scope.launch {
             try {
-                withContext(Dispatchers.IO) {
-                    db.templateDao().insert(Template(name = name, text = text))
+                if (editingTemplateId != null) {
+                    // Обновление
+                    val existing = withContext(Dispatchers.IO) {
+                        db.templateDao().getById(editingTemplateId!!)
+                    }
+                    existing?.let {
+                        withContext(Dispatchers.IO) {
+                            db.templateDao().update(it.copy(name = name, text = text))
+                        }
+                        Toast.makeText(this@TemplateEditorActivity, "Шаблон обновлен", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // Создание
+                    withContext(Dispatchers.IO) {
+                        db.templateDao().insert(Template(name = name, text = text))
+                    }
+                    Toast.makeText(this@TemplateEditorActivity, "Шаблон сохранен", Toast.LENGTH_SHORT).show()
                 }
-                Toast.makeText(this@TemplateEditorActivity, "Шаблон сохранен", Toast.LENGTH_SHORT).show()
                 finish()
             } catch (e: Exception) {
                 Toast.makeText(this@TemplateEditorActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
