@@ -31,7 +31,6 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
         initViews()
         setupSpinners()
         loadSettings()
@@ -79,9 +78,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun loadSettings() {
         scope.launch {
             try {
-                val loaded = withContext(Dispatchers.IO) {
-                    db.settingsDao().get()
-                }
+                val loaded = withContext(Dispatchers.IO) { db.settingsDao().get() }
                 if (loaded != null) {
                     settings = loaded
                     applySettings()
@@ -98,23 +95,15 @@ class SettingsActivity : AppCompatActivity() {
         etEmailBody.setText(settings.emailBody)
         etFileName.setText(settings.fileNameTemplate)
         switchDarkMode.isChecked = settings.darkMode
-
-        if (settings.settingsMode == "dev") {
-            setDevMode()
-        } else {
-            setUserMode()
-        }
+        if (settings.settingsMode == "dev") setDevMode() else setUserMode()
     }
 
     private fun setupListeners() {
         btnUserMode.setOnClickListener { setUserMode() }
         btnDevMode.setOnClickListener { setDevMode() }
         switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
+            if (isChecked) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
     }
 
@@ -162,9 +151,7 @@ class SettingsActivity : AppCompatActivity() {
 
         scope.launch {
             try {
-                withContext(Dispatchers.IO) {
-                    db.settingsDao().insert(settings)
-                }
+                withContext(Dispatchers.IO) { db.settingsDao().insert(settings) }
                 Toast.makeText(this@SettingsActivity, "Настройки сохранены", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 Toast.makeText(this@SettingsActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
