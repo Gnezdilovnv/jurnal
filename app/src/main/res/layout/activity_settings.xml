@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F2F2F7">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,6 +17,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginBottom="16dp">
+
             <Button
                 android:id="@+id/btnBack"
                 android:layout_width="wrap_content"
@@ -24,6 +26,7 @@
                 style="@style/ButtonSecondary"
                 android:backgroundTint="@color/surface"
                 android:textColor="@color/primary" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -33,6 +36,7 @@
                 android:textStyle="bold"
                 android:textColor="#0A0F1E"
                 android:gravity="center" />
+
         </LinearLayout>
 
         <!-- Режим -->
@@ -111,7 +115,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="12dp 16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
                     android:gravity="center_vertical">
 
                     <TextView
@@ -156,7 +163,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="12dp 16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
                     android:gravity="center_vertical">
 
                     <TextView
@@ -198,7 +208,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="12dp 16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
                     android:gravity="center_vertical">
 
                     <TextView
@@ -240,7 +253,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="12dp 16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
                     android:gravity="center_vertical">
 
                     <TextView
@@ -291,7 +307,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="12dp 16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
                     android:gravity="center_vertical">
 
                     <TextView
@@ -317,7 +336,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="12dp 16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
                     android:gravity="center_vertical">
 
                     <TextView
@@ -343,7 +365,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="12dp 16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
                     android:gravity="center_vertical">
 
                     <TextView
