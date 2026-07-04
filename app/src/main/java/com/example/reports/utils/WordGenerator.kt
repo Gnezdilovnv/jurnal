@@ -31,20 +31,20 @@ object WordGenerator {
             // Создаем документ
             val document = XWPFDocument()
 
-            // Добавляем заголовок (выравнивание по центру)
+            // Добавляем заголовок (выравнивание по центру - 1)
             val titleParagraph = document.createParagraph()
-            titleParagraph.setAlignment(XWPFParagraph.ALIGN_CENTER)
+            titleParagraph.setAlignment(1) // CENTER
             val titleRun = titleParagraph.createRun()
             titleRun.setText(fileName)
-            titleRun.isBold = true
-            titleRun.fontSize = 18
+            titleRun.setBold(true)
+            titleRun.setFontSize(18)
 
-            // Добавляем дату (выравнивание по правому краю)
+            // Добавляем дату (выравнивание по правому краю - 2)
             val dateParagraph = document.createParagraph()
-            dateParagraph.setAlignment(XWPFParagraph.ALIGN_RIGHT)
+            dateParagraph.setAlignment(2) // RIGHT
             val dateRun = dateParagraph.createRun()
             dateRun.setText("Создано: ${SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date())}")
-            dateRun.fontSize = 10
+            dateRun.setFontSize(10)
 
             // Пустая строка
             document.createParagraph()
@@ -53,7 +53,7 @@ object WordGenerator {
             val contentParagraph = document.createParagraph()
             val contentRun = contentParagraph.createRun()
             contentRun.setText(content)
-            contentRun.fontSize = 12
+            contentRun.setFontSize(12)
 
             // Сохраняем
             FileOutputStream(file).use { out ->
