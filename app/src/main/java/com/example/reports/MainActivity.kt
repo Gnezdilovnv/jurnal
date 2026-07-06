@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.nav_home -> {
-                    // Уже на главной
                     true
                 }
                 R.id.nav_templates -> {
@@ -44,7 +43,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // FAB для быстрого создания отчета
         val fab = findViewById<FloatingActionButton>(R.id.fab_create_report)
         fab.setOnClickListener {
             startActivity(Intent(this, CreateReportActivity::class.java))
