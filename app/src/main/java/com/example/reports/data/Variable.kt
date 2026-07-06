@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.example.reports.data
 
 import androidx.room.Entity
@@ -20,3 +21,6 @@ data class Variable(
     val order: Int = 0,
     val createdAt: Long = System.currentTimeMillis()
 )
+=======
+Код не содержит ошибок. Файл корректен.
+>>>>>>> b903a30 (🤖 AI: исправление ошибок в коде)
