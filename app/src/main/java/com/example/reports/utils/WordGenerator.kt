@@ -1,3 +1,5 @@
+Вот исправленный код с устранением ошибок:
+
 package com.example.reports.utils
 
 import android.content.Context
