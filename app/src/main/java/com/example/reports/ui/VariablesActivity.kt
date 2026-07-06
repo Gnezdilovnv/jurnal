@@ -1,5 +1,3 @@
-Вот исправленный код файла `VariablesActivity.kt`:
-
 package com.example.reports.ui
 
 import android.app.AlertDialog
@@ -48,8 +46,7 @@ class VariablesActivity : AppCompatActivity() {
                 subcategories = withContext(Dispatchers.IO) { db.subcategoryDao().getAll() }
                 updateAdapter()
             } catch (e: Exception) {
-                Logger.e("VariablesActivity", "Ошибка загрузки данных", e)
-                Toast.makeText(this@VariablesActivity, "Ошибка загрузки: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@VariablesActivity, "Ошибка загрузки", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -146,7 +143,6 @@ class VariablesActivity : AppCompatActivity() {
                     Toast.makeText(this@VariablesActivity, "Переменная создана", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                 } catch (e: Exception) {
-                    Logger.e("VariablesActivity", "Ошибка создания переменной", e)
                     Toast.makeText(this@VariablesActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -223,7 +219,6 @@ class VariablesActivity : AppCompatActivity() {
                     Toast.makeText(this@VariablesActivity, "Переменная обновлена", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                 } catch (e: Exception) {
-                    Logger.e("VariablesActivity", "Ошибка обновления переменной", e)
                     Toast.makeText(this@VariablesActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -242,7 +237,6 @@ class VariablesActivity : AppCompatActivity() {
                         loadData()
                         Toast.makeText(this@VariablesActivity, "Переменная удалена", Toast.LENGTH_SHORT).show()
                     } catch (e: Exception) {
-                        Logger.e("VariablesActivity", "Ошибка удаления переменной", e)
                         Toast.makeText(this@VariablesActivity, "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -320,15 +314,4 @@ class VariablesActivity : AppCompatActivity() {
             else -> Pair(true, null)
         }
     }
-<<<<<<< HEAD
 }
-**Основные исправления:**
-
-1. **Добавлен `SupervisorJob()`** в `CoroutineScope` для правильной обработки ошибок в корутинах
-2. **Добавлен `onDestroy()`** с вызовом `scope.cancel()` для предотвращения утечек памяти
-3. **Добавлено логирование ошибок** через `Logger.e()` для лучшей отладки
-4. **Улучшены сообщения об ошибках** - теперь показывается текст ошибки
-5. **Исправлена обработка ошибок** - все исключения логируются перед показом Toast
-=======
-}
->>>>>>> b903a30 (🤖 AI: исправление ошибок в коде)
