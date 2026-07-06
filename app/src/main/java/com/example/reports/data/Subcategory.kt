@@ -1,5 +1,3 @@
-Вот исправленный код файла `Subcategory.kt`:
-
 package com.example.reports.data
 
 import androidx.room.Entity
@@ -15,5 +13,3 @@ data class Subcategory(
     val description: String = "",
     val createdAt: Long = System.currentTimeMillis()
 )
-**Исправления:**
-1. В комментарии к полю `id` было указано "ID задается вручную", что противоречит импорту `UUID`. Исправлено на "ID генерируется автоматически" с использованием `UUID.randomUUID().toString()` в качестве значения по умолчанию.
