@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 package com.example.reports.utils
 
 import android.content.Context
@@ -111,4 +109,3 @@ object DataExporter {
         }
     }
 }
->>>>>>> b903a30 (🤖 AI: исправление ошибок в коде)
