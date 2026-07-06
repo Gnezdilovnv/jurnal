@@ -1,5 +1,3 @@
-Вот исправленный код файла `Settings.kt`:
-
 package com.example.reports.data
 
 import androidx.room.Entity
@@ -21,8 +19,3 @@ data class Settings(
     val settingsMode: String = "user",
     val updatedAt: Long = System.currentTimeMillis()
 )
-**Исправления:**
-1. Удалена пустая строка между `@PrimaryKey` и `val id`
-2. Удалена пустая строка между `@Entity(tableName = "settings")` и `data class Settings`
-
-Код теперь корректен и не содержит синтаксических ошибок.
