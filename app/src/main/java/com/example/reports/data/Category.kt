@@ -7,7 +7,7 @@ import java.util.UUID
 @Entity(tableName = "categories")
 data class Category(
     @PrimaryKey
-    val id: String,  // ID задается вручную при создании
+    val id: String = UUID.randomUUID().toString(),  // ID генерируется автоматически
     val name: String,
     val description: String = "",
     val createdAt: Long = System.currentTimeMillis()
