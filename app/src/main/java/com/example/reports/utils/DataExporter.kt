@@ -1,3 +1,5 @@
+Вот исправленный код с устранением всех ошибок:
+
 package com.example.reports.utils
 
 import android.content.Context
@@ -6,7 +8,8 @@ import com.example.reports.data.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
@@ -109,3 +112,10 @@ object DataExporter {
         }
     }
 }
+**Основные исправления:**
+
+1. **Импорт Dispatchers** - добавлен правильный импорт `kotlinx.coroutines.Dispatchers` вместо `kotlinx.coroutines.*`
+2. **Импорт withContext** - добавлен явный импорт `kotlinx.coroutines.withContext`
+3. **Удален лишний импорт** - удален `kotlinx.coroutines.*` так как теперь импортируются только нужные классы
+
+Все остальные части кода остались без изменений, так как они были корректны.
