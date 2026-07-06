@@ -40,7 +40,7 @@ class CreateReportActivity : AppCompatActivity() {
     private lateinit var btnWord: Button
 
     private val db by lazy { AppDatabase.getDatabase(this) }
-    private val scope = CoroutineScope(Dispatchers.Main)
+    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var templates = listOf<Template>()
     private var allVariables = listOf<Variable>()
     private var selectedTemplate: Template? = null
@@ -55,6 +55,11 @@ class CreateReportActivity : AppCompatActivity() {
 
         initViews()
         loadData()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel()
     }
 
     private fun initViews() {
@@ -362,7 +367,6 @@ class CreateReportActivity : AppCompatActivity() {
             return
         }
 
-        // Сначала создаем Word файл
         val fileName = "Отчет_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())}"
         val file = WordGenerator.generateDocx(
             context = this,
