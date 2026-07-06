@@ -11,21 +11,19 @@ object Logger {
 
     fun init(context: Context) {
         try {
-            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val reportsDir = File(downloadsDir, "Reports")
-            if (!reportsDir.exists()) {
-                reportsDir.mkdirs()
+            val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            if (dir != null && (dir.exists() || dir.mkdirs())) {
+                logFile = File(dir, "reports_app_log.txt")
+                logFile?.delete()
+                logFile?.createNewFile()
+                writeLog("=== APP STARTED ===")
             }
-            logFile = File(reportsDir, "app_log.txt")
-            logFile?.createNewFile()
-            writeLog("=== APP STARTED ===")
         } catch (_: Exception) {}
     }
 
     fun writeLog(msg: String) {
         try {
-            val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()).format(Date())
-            logFile?.appendText("[$timestamp] $msg\n")
+            logFile?.appendText("[${SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()).format(Date())}] $msg\n")
         } catch (_: Exception) {}
     }
 
