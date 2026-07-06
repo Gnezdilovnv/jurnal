@@ -1,5 +1,3 @@
-Вот исправленный код файла `SettingsActivity.kt`:
-
 package com.example.reports.ui
 
 import android.app.AlertDialog
@@ -115,7 +113,6 @@ class SettingsActivity : AppCompatActivity() {
         etFileName.setText(settings.fileNameTemplate)
         switchDarkMode.isChecked = settings.darkMode
         
-        // Устанавливаем позиции спиннеров
         val folderPosition = when (settings.saveFolder) {
             "Документы (Documents)" -> 1
             "Внешняя SD карта" -> 2
@@ -221,7 +218,6 @@ class SettingsActivity : AppCompatActivity() {
                         }
                         startActivity(Intent.createChooser(shareIntent, "Отправить бэкап через..."))
                     } catch (e: Exception) {
-                        // Если не получилось отправить, просто показываем сообщение
                         Logger.e("Share failed", e)
                     }
                 } else {
@@ -294,12 +290,3 @@ class SettingsActivity : AppCompatActivity() {
             .show()
     }
 }
-**Основные исправления:**
-
-1. **Импорт Switch**: Заменил `android.widget.Switch` на `Switch` (импорт уже есть)
-2. **Добавил SupervisorJob**: Для корректной отмены корутин при уничтожении Activity
-3. **Добавил onDestroy**: Для отмены scope корутин
-4. **Добавил установку позиций спиннеров**: В методе `applySettings()` теперь устанавливаются позиции для `spinnerSaveFolder` и `spinnerFormat`
-5. **Добавил сохранение режима**: В методах `setUserMode()` и `setDevMode()` теперь сохраняется режим в объекте `settings`
-6. **Добавил логирование ошибки**: В блоке catch при неудачной отправке файла
-7. **Убрал неиспользуемый импорт**: `Logger` используется, но был импортирован
