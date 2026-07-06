@@ -1,5 +1,3 @@
-Вот исправленный код с устранением всех ошибок:
-
 package com.example.reports.ui
 
 import android.app.AlertDialog
@@ -69,18 +67,15 @@ class CategoriesActivity : AppCompatActivity() {
                 val subCount = subcategories.count { it.categoryId == category.id }
                 tvSubCount.text = "$subCount подкатегорий"
 
-                // Клик — редактирование
                 holder.itemView.setOnClickListener {
                     showEditCategoryDialog(category)
                 }
 
-                // Долгий клик — удаление
                 holder.itemView.setOnLongClickListener {
                     showDeleteCategoryDialog(category)
                     true
                 }
 
-                // Кнопка подкатегорий
                 btnSub.setOnClickListener {
                     showSubcategoriesDialog(category)
                 }
@@ -91,7 +86,6 @@ class CategoriesActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
     }
 
-    // ========== ДИАЛОГ СОЗДАНИЯ КАТЕГОРИИ ==========
     private fun showAddCategoryDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_category, null)
         val etId = dialogView.findViewById<EditText>(R.id.etCategoryId)
@@ -130,7 +124,6 @@ class CategoriesActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    // ========== РЕДАКТИРОВАНИЕ КАТЕГОРИИ ==========
     private fun showEditCategoryDialog(category: Category) {
         val input = EditText(this)
         input.setText(category.name)
@@ -158,7 +151,6 @@ class CategoriesActivity : AppCompatActivity() {
             .show()
     }
 
-    // ========== УДАЛЕНИЕ КАТЕГОРИИ ==========
     private fun showDeleteCategoryDialog(category: Category) {
         AlertDialog.Builder(this)
             .setTitle("Удалить категорию?")
@@ -182,7 +174,6 @@ class CategoriesActivity : AppCompatActivity() {
             .show()
     }
 
-    // ========== ПОДКАТЕГОРИИ ==========
     private fun showSubcategoriesDialog(category: Category) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_subcategories, null)
         val listView = dialogView.findViewById<ListView>(R.id.listSubcategories)
@@ -209,13 +200,11 @@ class CategoriesActivity : AppCompatActivity() {
                 )
                 listView.adapter = adapter
 
-                // Клик по подкатегории — редактирование
                 listView.setOnItemClickListener { _, _, position, _ ->
                     val sub = subs[position]
                     showEditSubcategoryDialog(sub)
                 }
 
-                // Долгий клик по подкатегории — удаление
                 listView.setOnItemLongClickListener { _, _, position, _ ->
                     val sub = subs[position]
                     showDeleteSubcategoryDialog(sub)
@@ -259,7 +248,6 @@ class CategoriesActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    // ========== РЕДАКТИРОВАНИЕ ПОДКАТЕГОРИИ ==========
     private fun showEditSubcategoryDialog(sub: Subcategory) {
         val input = EditText(this)
         input.setText(sub.name)
@@ -287,7 +275,6 @@ class CategoriesActivity : AppCompatActivity() {
             .show()
     }
 
-    // ========== УДАЛЕНИЕ ПОДКАТЕГОРИИ ==========
     private fun showDeleteSubcategoryDialog(sub: Subcategory) {
         AlertDialog.Builder(this)
             .setTitle("Удалить подкатегорию?")
@@ -309,8 +296,3 @@ class CategoriesActivity : AppCompatActivity() {
             .show()
     }
 }
-**Основные исправления:**
-
-1. **Добавлен `SupervisorJob()`** в `CoroutineScope` для правильной обработки ошибок в корутинах
-2. **Добавлен `onDestroy()`** с вызовом `scope.cancel()` для предотвращения утечек памяти
-3. Все остальные ошибки были исправлены в процессе рефакторинга кода
