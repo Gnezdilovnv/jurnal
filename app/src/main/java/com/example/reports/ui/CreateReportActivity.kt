@@ -1,5 +1,3 @@
-Вот исправленный код с устранением всех ошибок:
-
 package com.example.reports.ui
 
 import android.Manifest
@@ -10,9 +8,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -45,7 +40,7 @@ class CreateReportActivity : AppCompatActivity() {
     private lateinit var btnWord: Button
 
     private val db by lazy { AppDatabase.getDatabase(this) }
-    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private val scope = CoroutineScope(Dispatchers.Main)
     private var templates = listOf<Template>()
     private var allVariables = listOf<Variable>()
     private var selectedTemplate: Template? = null
@@ -60,11 +55,6 @@ class CreateReportActivity : AppCompatActivity() {
 
         initViews()
         loadData()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        scope.cancel()
     }
 
     private fun initViews() {
@@ -174,7 +164,7 @@ class CreateReportActivity : AppCompatActivity() {
         val label = TextView(this).apply {
             text = "⚠️ $varName (неизвестная переменная)"
             textSize = 16f
-            setTextColor(ContextCompat.getColor(this@CreateReportActivity, R.color.red))
+            setTextColor(getColor(R.color.red))
         }
         container.addView(label)
         containerFields.addView(container)
@@ -183,8 +173,8 @@ class CreateReportActivity : AppCompatActivity() {
     private fun addTextField(container: LinearLayout, variable: Variable) {
         val input = EditText(this).apply {
             hint = "Введите текст"
-            addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
+            addTextChangedListener(object : android.text.TextWatcher {
+                override fun afterTextChanged(s: android.text.Editable?) {
                     fieldValues[variable.name] = s.toString()
                     generateReport()
                 }
@@ -199,9 +189,9 @@ class CreateReportActivity : AppCompatActivity() {
     private fun addNumberField(container: LinearLayout, variable: Variable) {
         val input = EditText(this).apply {
             hint = "Введите число"
-            inputType = InputType.TYPE_CLASS_NUMBER
-            addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            addTextChangedListener(object : android.text.TextWatcher {
+                override fun afterTextChanged(s: android.text.Editable?) {
                     fieldValues[variable.name] = s.toString()
                     generateReport()
                 }
@@ -434,14 +424,3 @@ class CreateReportActivity : AppCompatActivity() {
             }
     }
 }
-**Основные исправления:**
-
-1. **Добавлен импорт `Editable`** - для использования в TextWatcher
-2. **Добавлен импорт `InputType`** - для использования в addNumberField
-3. **Добавлен импорт `TextWatcher`** - для использования в текстовых полях
-4. **Добавлен `SupervisorJob()`** в CoroutineScope для правильной обработки ошибок
-5. **Добавлен `onDestroy()`** с отменой корутин для предотвращения утечек памяти
-6. **Исправлен `getColor()`** на `ContextCompat.getColor()` для совместимости
-7. **Исправлены типы параметров** в TextWatcher (использование `Editable?` вместо `android.text.Editable?`)
-
-Все остальные функциональные части кода остались без изменений, так как они были корректны.
