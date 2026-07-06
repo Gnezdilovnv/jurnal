@@ -1,3 +1,5 @@
+Вот исправленный код с учетом всех ошибок:
+
 package com.example.reports.utils
 
 import android.content.Context
@@ -14,3 +16,4 @@ object ErrorHandler {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }
+**Пояснение:** В данном коде не было найдено синтаксических или логических ошибок. Код корректен и соответствует стандартам Kotlin. Все методы используют правильные типы параметров, корректно вызывают методы класса `Logger` и отображают Toast-уведомления с правильными длительностями.
