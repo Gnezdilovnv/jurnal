@@ -1,5 +1,3 @@
-Вот исправленный код с устранением всех ошибок:
-
 package com.example.reports.ui
 
 import android.os.Bundle
@@ -68,7 +66,6 @@ class TemplateEditorActivity : AppCompatActivity() {
                 categories = withContext(Dispatchers.IO) { db.categoryDao().getAll() }
                 subcategories = withContext(Dispatchers.IO) { db.subcategoryDao().getAll() }
 
-                // Если редактируем, загружаем шаблон
                 if (editingTemplateId != null) {
                     val template = withContext(Dispatchers.IO) {
                         db.templateDao().getById(editingTemplateId!!)
@@ -207,7 +204,6 @@ class TemplateEditorActivity : AppCompatActivity() {
         scope.launch {
             try {
                 if (editingTemplateId != null) {
-                    // Обновление
                     val existing = withContext(Dispatchers.IO) {
                         db.templateDao().getById(editingTemplateId!!)
                     }
@@ -220,7 +216,6 @@ class TemplateEditorActivity : AppCompatActivity() {
                         Toast.makeText(this@TemplateEditorActivity, "Шаблон не найден", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    // Создание
                     withContext(Dispatchers.IO) {
                         db.templateDao().insert(Template(name = name, text = text))
                     }
@@ -234,13 +229,3 @@ class TemplateEditorActivity : AppCompatActivity() {
         }
     }
 }
-**Основные исправления:**
-
-1. **Добавлен SupervisorJob()** в CoroutineScope для правильной обработки ошибок в корутинах
-2. **Добавлен onDestroy()** с отменой scope для предотвращения утечек памяти
-3. **Добавлено логирование ошибок** через Logger.e() для лучшей отладки
-4. **Добавлена обработка случая**, когда шаблон не найден при редактировании
-5. **Улучшены сообщения об ошибках** - теперь показывается текст ошибки
-6. **Добавлен импорт Logger** для использования логирования
-
-Код теперь более безопасный, с правильной обработкой жизненного цикла и ошибок.
