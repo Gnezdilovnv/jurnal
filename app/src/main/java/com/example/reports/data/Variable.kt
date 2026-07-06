@@ -1,5 +1,3 @@
-Вот исправленный код с устранением всех ошибок:
-
 package com.example.reports.data
 
 import androidx.room.Entity
@@ -22,10 +20,3 @@ data class Variable(
     val order: Int = 0,
     val createdAt: Long = System.currentTimeMillis()
 )
-**Что было исправлено:**
-
-1. **Импорт UUID** - добавлен недостающий импорт `import java.util.UUID`
-2. **Синтаксис аннотации** - исправлена аннотация `@PrimaryKey` (было написано слитно)
-3. **Использование UUID** - исправлен вызов `UUID.randomUUID().toString()` (было написано с ошибкой)
-
-Все остальные части кода были корректны и не требовали изменений.
