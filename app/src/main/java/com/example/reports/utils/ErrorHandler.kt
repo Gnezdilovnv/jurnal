@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 package com.example.reports.utils
 
 import android.content.Context
@@ -16,4 +14,3 @@ object ErrorHandler {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }
->>>>>>> b903a30 (🤖 AI: исправление ошибок в коде)
